@@ -1,12 +1,17 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { UPDATE_AUTH_FIELD, SET_AUTH_ERROR } from '../redux/reducers/auth.reducer';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const Register = () => {
-    const dispatch = useDispatch();
-    const user = useSelector(state => state.auth.user);
-    const error = useSelector(state => state.auth.error);
+    const navigate = useNavigate();
+    const [formData, setFormData] = useState({
+        email: '',
+        password: '',
+        username: '',
+        confirmPassword: '',
+        isActive: true
+    });
+    const [error, setError] = useState(null);
 
     const api = axios.create({
         baseURL: 'http://localhost:8000/api',
@@ -14,22 +19,23 @@ const Register = () => {
     });
 
     const handleChange = (e) => {
-        dispatch(UPDATE_AUTH_FIELD({
+        setFormData({
+            ...formData,
             [e.target.name]: e.target.value
-        }));
+        });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (user.password !== user.confirmPassword) {
-            dispatch(SET_AUTH_ERROR("Les mots de passe ne correspondent pas"));
+        if (formData.password !== formData.confirmPassword) {
+            setError("Les mots de passe ne correspondent pas");
             return;
         }
         try {
-            await api.post('/user/register', user);
-            window.location.href = '/login';
+            await api.post('/user/register', formData);
+            navigate('/login');
         } catch (error) {
-            dispatch(SET_AUTH_ERROR(error.response?.data?.message || "Erreur lors de l'inscription"));
+            setError(error.response?.data?.message || "Erreur lors de l'inscription");
         }
     };
 
@@ -44,7 +50,7 @@ const Register = () => {
                         id="username"
                         type="text"
                         name="username"
-                        value={user.username}
+                        value={formData.username}
                         onChange={handleChange}
                         placeholder="Entrez votre nom d'utilisateur"
                         required
@@ -56,7 +62,7 @@ const Register = () => {
                         id="email"
                         type="email"
                         name="email"
-                        value={user.email}
+                        value={formData.email}
                         onChange={handleChange}
                         placeholder="Entrez votre email"
                         required
@@ -68,7 +74,7 @@ const Register = () => {
                         id="password"
                         type="password"
                         name="password"
-                        value={user.password}
+                        value={formData.password}
                         onChange={handleChange}
                         placeholder="Entrez votre mot de passe"
                         required
@@ -80,7 +86,7 @@ const Register = () => {
                         id="confirmPassword"
                         type="password"
                         name="confirmPassword"
-                        value={user.confirmPassword}
+                        value={formData.confirmPassword}
                         onChange={handleChange}
                         placeholder="Confirmez votre mot de passe"
                         required

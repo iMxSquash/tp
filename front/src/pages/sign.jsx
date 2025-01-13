@@ -1,33 +1,31 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
 import { AuthContext } from '../context/AuthContext';
-import { UPDATE_AUTH_FIELD, SET_AUTH_ERROR } from '../redux/reducers/auth.reducer';
 
 const Sign = () => {
-    const dispatch = useDispatch();
-    const user = useSelector(state => state.auth.user);
-    const error = useSelector(state => state.auth.error);
+    const [formData, setFormData] = useState({
+        email: '',
+        password: ''
+    });
+    const [error, setError] = useState(null);
     const { login } = useContext(AuthContext);
 
     const handleChange = (e) => {
-        dispatch(UPDATE_AUTH_FIELD({
+        setFormData({
+            ...formData,
             [e.target.name]: e.target.value
-        }));
+        });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const result = await login({
-                email: user.email,
-                password: user.password
-            });
+            const result = await login(formData);
             if (!result.success) {
-                dispatch(SET_AUTH_ERROR(result.error));
+                setError(result.error);
             }
         } catch (error) {
-            dispatch(SET_AUTH_ERROR("Une erreur s'est produite lors de la connexion"));
+            setError("Une erreur s'est produite lors de la connexion");
         }
     };
 
@@ -42,7 +40,7 @@ const Sign = () => {
                         id="email"
                         type="email"
                         name="email"
-                        value={user.email}
+                        value={formData.email}
                         onChange={handleChange}
                         placeholder="Entrez votre email"
                         required
@@ -54,7 +52,7 @@ const Sign = () => {
                         id="password"
                         type="password"
                         name="password"
-                        value={user.password}
+                        value={formData.password}
                         onChange={handleChange}
                         placeholder="Entrez votre mot de passe"
                         required
