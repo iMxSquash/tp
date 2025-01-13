@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 
 const Detail = () => {
     const [article, setArticle] = useState([]);
@@ -42,7 +42,9 @@ const Detail = () => {
             <p>{article.price}€</p>
             <p>{article.description}</p>
             <button onClick={deleteArticle}>Supprimer l'article</button>
-            <button onClick={() => navigate(`/update/${id}`)}>Modifier l'article</button>
+            <Link to={`/update/${id}`}>
+                <button>Modifier l'article</button>
+            </Link>
         </>
     );
 };

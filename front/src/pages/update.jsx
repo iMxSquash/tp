@@ -77,6 +77,7 @@ const Update = () => {
                         name="name"
                         value={article.name}
                         onChange={handleChange}
+                        placeholder="Nom de l'article"
                     />
                 </div>
                 <div>
@@ -86,6 +87,7 @@ const Update = () => {
                         name="price"
                         value={article.price}
                         onChange={handleChange}
+                        placeholder="Prix de l'article"
                     />
                 </div>
                 <div>
@@ -94,6 +96,7 @@ const Update = () => {
                         name="content"
                         value={article.content}
                         onChange={handleChange}
+                        placeholder="Description de l'article"
                     />
                 </div>
                 {imgInputs.map((imgName, index) => (
@@ -110,6 +113,7 @@ const Update = () => {
                             name={imgName}
                             value={article.picture[imgName] ? article.picture[imgName] : ''}
                             onChange={handleChange}
+                            placeholder={`URL de l'image ${index || 'principale'}`}
                         />
                     </div>
                 ))}
