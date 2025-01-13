@@ -5,16 +5,18 @@ import Detail from "./pages/detail";
 import AddArticle from "./pages/add";
 import Update from "./pages/update";
 import Register from "./pages/register";
+import Sign from "./pages/sign";
 
 function App() {
   return (
-    <Routes>
-      <Route index element={<Home />} />
-      <Route path="/detail/:id" element={<Detail />} />
-      <Route path="/add" element={<AddArticle />} />
-      <Route path="/update/:id" element={<Update />} />
-      <Route path="/register" element={<Register />} />
-    </Routes>
+      <Routes>
+        <Route index element={<Home />} />
+        <Route path="/detail/:id" element={<Detail />} />
+        <Route path="/add" element={<AddArticle />} />
+        <Route path="/update/:id" element={<Update />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/sign" element={<Sign />} />
+      </Routes>
   );
 }
 

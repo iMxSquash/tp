@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import axios from 'axios';
 
 const Update = () => {
     const imgInputs = ['img', 'img1', 'img2', 'img3', 'img4'];
@@ -23,14 +24,18 @@ const Update = () => {
     const navigate = useNavigate();
     const { id } = useParams();
 
+    const api = axios.create({
+        baseURL: 'http://localhost:8000/api',
+        withCredentials: true
+    });
+
     useEffect(() => {
         const fetchArticle = async () => {
             try {
-                const response = await fetch(`http://localhost:8000/api/article/get/${id}`);
-                const data = await response.json();
+                const { data } = await axios.get(`/article/get/${id}`);
                 setArticle(data);
             } catch (error) {
-                setError(error.message);
+                setError(error.response?.data?.message);
             }
         };
         fetchArticle();
@@ -57,12 +62,10 @@ const Update = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch(`http://localhost:8000/api/article/update/${id}`, article);
-            if (response.ok) {
-                navigate(`/detail/${id}`);
-            }
+            await api.put(`/article/update/${id}`, article);
+            navigate(`/detail/${id}`);
         } catch (error) {
-            setError('Erreur lors de la maj:', error.message);
+            setError(error.response?.data?.message || "Erreur lors de la mise à jour");
         }
     };
 
