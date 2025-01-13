@@ -19,10 +19,10 @@ export const AuthProvider = ({ children }) => {
         withCredentials: true
     });
 
-    const login = async (dataForm) => {
+    const login = async (user) => {
         setLoading(true);
         try {
-            const { data, status } = await api.post('/user/sign', dataForm);
+            const { data, status } = await api.post('/user/sign', user);
             if (status === 200) {
                 localStorage.setItem('auth', JSON.stringify(data));
                 setAuth(data);

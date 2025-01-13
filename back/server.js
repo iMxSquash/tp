@@ -241,6 +241,8 @@ const sortedByNote = async (req, res) => {
 const signup = async (req, res, next) => {
   try{
     const hashedPassword = await bcrypt.hash(req.body.password, 10)
+    console.log(req.body);
+    
     const user = await Model.create({
       ...req.body,
       password: hashedPassword,

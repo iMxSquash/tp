@@ -4,35 +4,35 @@ import axios from 'axios';
 
 const Register = () => {
     const navigate = useNavigate();
-    const [formData, setFormData] = useState({
+    const [user, setUser] = useState({
         email: '',
         password: '',
-        username: '',
-        confirmPassword: '',
+        prenom: '',
         isActive: true
     });
     const [error, setError] = useState(null);
 
     const api = axios.create({
         baseURL: 'http://localhost:8000/api',
-        withCredentials: true
     });
 
     const handleChange = (e) => {
-        setFormData({
-            ...formData,
+        setUser({
+            ...user,
             [e.target.name]: e.target.value
         });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (formData.password !== formData.confirmPassword) {
+        if (user.password !== user.confirmPassword) {
             setError("Les mots de passe ne correspondent pas");
             return;
         }
         try {
-            await api.post('/user/register', formData);
+            console.log(user);
+            
+            await api.post('/user/signup', user);
             navigate('/login');
         } catch (error) {
             setError(error.response?.data?.message || "Erreur lors de l'inscription");
@@ -45,12 +45,12 @@ const Register = () => {
             {error && <p style={{ color: 'red' }}>{error}</p>}
             <form onSubmit={handleSubmit}>
                 <div>
-                    <label htmlFor="username">Nom d'utilisateur:</label>
+                    <label htmlFor="prenom">Nom d'utilisateur:</label>
                     <input
-                        id="username"
+                        id="prenom"
                         type="text"
-                        name="username"
-                        value={formData.username}
+                        name="prenom"
+                        value={user.prenom}
                         onChange={handleChange}
                         placeholder="Entrez votre nom d'utilisateur"
                         required
@@ -62,7 +62,7 @@ const Register = () => {
                         id="email"
                         type="email"
                         name="email"
-                        value={formData.email}
+                        value={user.email}
                         onChange={handleChange}
                         placeholder="Entrez votre email"
                         required
@@ -74,7 +74,7 @@ const Register = () => {
                         id="password"
                         type="password"
                         name="password"
-                        value={formData.password}
+                        value={user.password}
                         onChange={handleChange}
                         placeholder="Entrez votre mot de passe"
                         required
@@ -86,7 +86,7 @@ const Register = () => {
                         id="confirmPassword"
                         type="password"
                         name="confirmPassword"
-                        value={formData.confirmPassword}
+                        value={user.confirmPassword}
                         onChange={handleChange}
                         placeholder="Confirmez votre mot de passe"
                         required

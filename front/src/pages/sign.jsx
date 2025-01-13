@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 
 const Sign = () => {
-    const [formData, setFormData] = useState({
+    const [user, setUser] = useState({
         email: '',
         password: ''
     });
@@ -11,8 +11,8 @@ const Sign = () => {
     const { login } = useContext(AuthContext);
 
     const handleChange = (e) => {
-        setFormData({
-            ...formData,
+        setUser({
+            ...user,
             [e.target.name]: e.target.value
         });
     };
@@ -20,7 +20,7 @@ const Sign = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const result = await login(formData);
+            const result = await login(user);
             if (!result.success) {
                 setError(result.error);
             }
@@ -40,7 +40,7 @@ const Sign = () => {
                         id="email"
                         type="email"
                         name="email"
-                        value={formData.email}
+                        value={user.email}
                         onChange={handleChange}
                         placeholder="Entrez votre email"
                         required
@@ -52,7 +52,7 @@ const Sign = () => {
                         id="password"
                         type="password"
                         name="password"
-                        value={formData.password}
+                        value={user.password}
                         onChange={handleChange}
                         placeholder="Entrez votre mot de passe"
                         required
