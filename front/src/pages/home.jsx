@@ -36,6 +36,7 @@ const Home = () => {
                         <img src={item.picture.img} alt={item.name} width={200} />
                     </Link>
                     <p>{item.price}</p>
+                    <Link to={{ pathname: `/update/${item._id}` }}>Update</Link>
                 </div>
             ))}
         </>

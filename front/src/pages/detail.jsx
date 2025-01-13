@@ -1,10 +1,10 @@
-import { useState, useEffect, use } from "react";
-import { useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 
 const Detail = () => {
     const [article, setArticle] = useState([]);
     const [error, setError] = useState(null);
-
+    const navigate = useNavigate();
     const { id } = useParams();
 
     useEffect(() => {
@@ -21,6 +21,19 @@ const Detail = () => {
         fetchArticle();
     }, [id]);
 
+    const deleteArticle = async () => {
+        try {
+            const response = await fetch(`http://localhost:8000/api/article/delete/${id}`, {
+                method: 'DELETE',
+            });
+            if (response.ok) {
+                navigate('/');
+            }
+        } catch (error) {
+            setError(error.message);
+        }
+    };
+
     return (
         <>
             <h1>Détails de l'article</h1>
@@ -28,6 +41,8 @@ const Detail = () => {
             <img src={article.picture.img} alt={article.name} width={200} />
             <p>{article.price}€</p>
             <p>{article.description}</p>
+            <button onClick={deleteArticle}>Supprimer l'article</button>
+            <button onClick={() => navigate(`/update/${id}`)}>Modifier l'article</button>
         </>
     );
 };
