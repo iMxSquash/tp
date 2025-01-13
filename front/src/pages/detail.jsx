@@ -48,9 +48,13 @@ const Detail = () => {
         <>
             <h1>Détails de l'article</h1>
             <h2>{article.name}</h2>
-            <img src={article.picture.img} alt={article.name} width={200} />
+            <img src={`http://localhost:8000${article.picture.img}`} alt={article.name} width={200} />
             <p>{article.price}€</p>
             <p>{article.description}</p>
+            <p>{article.category}</p>
+            <p>{article.brand}</p>
+            <p>{article.stock} en stock</p>
+            <p>{article.status ? 'Disponible' : 'Indisponible'}</p>
             <button onClick={deleteArticle}>Supprimer l'article</button>
             <Link to={`/update/${id}`}>
                 <button>Modifier l'article</button>

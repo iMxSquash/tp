@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import * as ACTIONS from "../redux/reducers/article.reducer";
@@ -33,11 +33,12 @@ const Home = () => {
     return (
         <>
             <h1>Bienvenue sur ma page d'accueil</h1>
+            {articles.length === 0 && <p>Aucun article disponible</p>}
             {articles.map((item) => (
                 <div key={item._id}>
                     <h2>{item.name}</h2>
                     <Link to={`/detail/${item._id}`}>
-                        <img src={item.picture.img} alt={item.name} width={200} />
+                        <img src={`http://localhost:8000${item.picture.img}`} alt={item.name} width={200} />
                     </Link>
                     <p>{item.price}</p>
                     <Link to={`/update/${item._id}`}>Update</Link>
