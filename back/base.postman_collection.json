@@ -1,0 +1,448 @@
+{
+	"info": {
+		"_postman_id": "7698bebf-6961-4671-9527-c80464a618f5",
+		"name": "LA_FOIRE",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1620299"
+	},
+	"item": [
+		{
+			"name": "USER",
+			"item": [
+				{
+					"name": "SIGNUP",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"prenom\": \"francis\",\n    \"email\": \"francis.freedev@gmail.com\", \n    \"password\": \"lol\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/signup",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SIGN",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"ah@gmail.com\", \n    \"password\": \"lol\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/sign",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sign"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET ALL USERS",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/get",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"get"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET BY ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/get/67447fe42b7d4df44ff46c44",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"get",
+								"67447fe42b7d4df44ff46c44"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/delete/67447fe42b7d4df44ff46c44",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"delete",
+								"67447fe42b7d4df44ff46c44"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/update/67447fe42b7d4df44ff46c44",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"update",
+								"67447fe42b7d4df44ff46c44"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "VerifyEmail",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/verify/:token",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"verify",
+								":token"
+							],
+							"variable": [
+								{
+									"key": "token",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reactivateUser",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reactivate/67447fe42b7d4df44ff46c44",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reactivate",
+								"67447fe42b7d4df44ff46c44"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ARTICLE",
+			"item": [
+				{
+					"name": "AJOUT ARTICLE",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Femme\",\n    \"content\": \"baskete Femme Nike\", \n    \"category\": \"baskete\",\n    \"brand\": \"NIKE\",\n    \"price\": 149,\n    \"avis\": [],\n    \"picture\": {\n      \"img\": \"https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/ab767ea1-4b8f-4cd6-a177-74ec1d0d0a96/W+NIKE+AIR+MAX+PORTAL.png\"\n    }, \n    \"status\": true,\n    \"stock\": 5\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL_ARTICLE}}/add",
+							"host": [
+								"{{URL_ARTICLE}}"
+							],
+							"path": [
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET ALL ARTICLE",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_ARTICLE}}/all",
+							"host": [
+								"{{URL_ARTICLE}}"
+							],
+							"path": [
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET BY ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_ARTICLE}}/get/67465378178f387b1fa877ee",
+							"host": [
+								"{{URL_ARTICLE}}"
+							],
+							"path": [
+								"get",
+								"67465378178f387b1fa877ee"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ASC",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_ARTICLE}}/asc",
+							"host": [
+								"{{URL_ARTICLE}}"
+							],
+							"path": [
+								"asc"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DESC",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_ARTICLE}}/desc",
+							"host": [
+								"{{URL_ARTICLE}}"
+							],
+							"path": [
+								"desc"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AVIS",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_ARTICLE}}/avis/675eed4d6a7d3c7151104c76",
+							"host": [
+								"{{URL_ARTICLE}}"
+							],
+							"path": [
+								"avis",
+								"675eed4d6a7d3c7151104c76"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Note",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_ARTICLE}}/note",
+							"host": [
+								"{{URL_ARTICLE}}"
+							],
+							"path": [
+								"note"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL_ARTICLE}}/delete/675eed4d6a7d3c7151104c76",
+							"host": [
+								"{{URL_ARTICLE}}"
+							],
+							"path": [
+								"delete",
+								"675eed4d6a7d3c7151104c76"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{URL_ARTICLE}}/update/675eed4d6a7d3c7151104c76",
+							"host": [
+								"{{URL_ARTICLE}}"
+							],
+							"path": [
+								"update",
+								"675eed4d6a7d3c7151104c76"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "AVIS",
+			"item": [
+				{
+					"name": "POST AVIS",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user\": \"674480cb2b7d4df44ff46c49\",\n    \"article\": \"67465378178f387b1fa877ee\",\n    \"rating\": 5,\n    \"comment\": \"Lourd de ouf ! \"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url_avis}}/add/674653d4178f387b1fa877f0",
+							"host": [
+								"{{base_url_avis}}"
+							],
+							"path": [
+								"add",
+								"674653d4178f387b1fa877f0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE",
+					"request": {
+						"method": "DELETE",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{URL_AVIS}}}/update/67476c02ce1f94105e2cad17",
+							"host": [
+								"{{URL_AVIS}}}"
+							],
+							"path": [
+								"update",
+								"67476c02ce1f94105e2cad17"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "htpp://localhost:8000",
+			"type": "default"
+		},
+		{
+			"key": "URL_ARTICLE",
+			"value": "http://localhost:8000/api/article",
+			"type": "default"
+		},
+		{
+			"key": "URL_AVIS",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
