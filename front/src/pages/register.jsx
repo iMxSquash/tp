@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import axios from 'axios';
 
 const Register = () => {
     const [user, setUser] = useState({
@@ -10,6 +11,11 @@ const Register = () => {
         confirmPassword: ""
     });
     const [error, setError] = useState(null);
+
+    const api = axios.create({
+        baseURL: 'http://localhost:8000/api',
+        withCredentials: true
+    });
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -26,18 +32,10 @@ const Register = () => {
             return;
         }
         try {
-            const response = await fetch('http://localhost:8000/api/user/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(user)
-            });
-            if (response.ok) {
-                window.location.href = '/login';
-            }
+            await api.post('/user/register', user);
+            window.location.href = '/login';
         } catch (error) {
-            setError(error.message);
+            setError(error.response?.data?.message || "Erreur lors de l'inscription");
         }
     };
 

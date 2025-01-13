@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
+import axios from 'axios';
 
 const Detail = () => {
     const [article, setArticle] = useState([]);
@@ -7,15 +8,18 @@ const Detail = () => {
     const navigate = useNavigate();
     const { id } = useParams();
 
+    const api = axios.create({
+        baseURL: 'http://localhost:8000/api',
+        withCredentials: true
+    });
+
     useEffect(() => {
         const fetchArticle = async () => {
             try {
-                const response = await fetch(`http://localhost:8000/api/article/get/${id}`);
-                const data = await response.json();
-
+                const { data } = await api.get(`/article/get/${id}`);
                 setArticle(data);
             } catch (error) {
-                setError(error.message);
+                setError(error.response?.data?.message || "Erreur lors du chargement");
             }
         };
         fetchArticle();
@@ -23,14 +27,10 @@ const Detail = () => {
 
     const deleteArticle = async () => {
         try {
-            const response = await fetch(`http://localhost:8000/api/article/delete/${id}`, {
-                method: 'DELETE',
-            });
-            if (response.ok) {
-                navigate('/');
-            }
+            await api.delete(`/article/delete/${id}`);
+            navigate('/');
         } catch (error) {
-            setError(error.message);
+            setError(error.response?.data?.message || "Erreur lors de la suppression");
         }
     };
 

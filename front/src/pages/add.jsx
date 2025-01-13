@@ -14,6 +14,11 @@ const AddArticle = () => {
         stock: 0
     });
 
+    const api = axios.create({
+        baseURL: 'http://localhost:8000/api',
+        withCredentials: true
+    });
+
     const handleChange = (e) => {
         const { name, value, files } = e.target;
 
@@ -44,8 +49,8 @@ const AddArticle = () => {
         });
 
         try {
-            const response = await axios.post(
-                `http://localhost:8000/api/article/add`,
+            const response = await api.post(
+                `/article/add`,
                 formData,
                 {
                     headers: {

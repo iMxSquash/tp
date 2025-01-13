@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { data, Link } from "react-router-dom";
-
+import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import * as ACTIONS from "../redux/reducers/article.reducer";
+import axios from 'axios';
 
 const Home = () => {
     const [article, setArticle] = useState([]);
@@ -10,15 +10,19 @@ const Home = () => {
 
     const dispatch = useDispatch()
 
+    const api = axios.create({
+        baseURL: 'http://localhost:8000/api',
+    });
+
     useEffect(() => {
         const fetchArticle = async () => {
-            dispatch(ACTIONS.FETCH_ARTICLE_START())
-
+            dispatch(ACTIONS.FETCH_ARTICLE_START());
             try {
-                const response = await fetch("http://localhost:8000/api/article/all");
-                dispatch(ACTIONS.FETCH_ARTICLE_SUCCESS(data))
-            } catch (e) {
-                console.log(e.message)
+                const { data } = await api.get("/article/all");
+                console.log(data);
+                dispatch(ACTIONS.FETCH_ARTICLE_SUCCESS(data));
+            } catch (error) {
+                console.log(error.response?.data?.message);
             }
         };
         fetchArticle();
