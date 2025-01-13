@@ -1,16 +1,12 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { UPDATE_AUTH_FIELD, SET_AUTH_ERROR } from '../redux/reducers/auth.reducer';
 import axios from 'axios';
 
 const Register = () => {
-    const [user, setUser] = useState({
-        isActive: true,
-        username: "",
-        email: "",
-        password: "",
-        confirmPassword: ""
-    });
-    const [error, setError] = useState(null);
+    const dispatch = useDispatch();
+    const user = useSelector(state => state.auth.user);
+    const error = useSelector(state => state.auth.error);
 
     const api = axios.create({
         baseURL: 'http://localhost:8000/api',
@@ -18,24 +14,22 @@ const Register = () => {
     });
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setUser(prev => ({
-            ...prev,
-            [name]: value
+        dispatch(UPDATE_AUTH_FIELD({
+            [e.target.name]: e.target.value
         }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (user.password !== user.confirmPassword) {
-            setError("Les mots de passe ne correspondent pas");
+            dispatch(SET_AUTH_ERROR("Les mots de passe ne correspondent pas"));
             return;
         }
         try {
             await api.post('/user/register', user);
             window.location.href = '/login';
         } catch (error) {
-            setError(error.response?.data?.message || "Erreur lors de l'inscription");
+            dispatch(SET_AUTH_ERROR(error.response?.data?.message || "Erreur lors de l'inscription"));
         }
     };
 
@@ -45,8 +39,9 @@ const Register = () => {
             {error && <p style={{ color: 'red' }}>{error}</p>}
             <form onSubmit={handleSubmit}>
                 <div>
-                    <label>Nom d'utilisateur:</label>
+                    <label htmlFor="username">Nom d'utilisateur:</label>
                     <input
+                        id="username"
                         type="text"
                         name="username"
                         value={user.username}
@@ -56,8 +51,9 @@ const Register = () => {
                     />
                 </div>
                 <div>
-                    <label>Email:</label>
+                    <label htmlFor="email">Email:</label>
                     <input
+                        id="email"
                         type="email"
                         name="email"
                         value={user.email}
@@ -67,8 +63,9 @@ const Register = () => {
                     />
                 </div>
                 <div>
-                    <label>Mot de passe:</label>
+                    <label htmlFor="password">Mot de passe:</label>
                     <input
+                        id="password"
                         type="password"
                         name="password"
                         value={user.password}
@@ -78,8 +75,9 @@ const Register = () => {
                     />
                 </div>
                 <div>
-                    <label>Confirmer le mot de passe:</label>
+                    <label htmlFor="confirmPassword">Confirmer le mot de passe:</label>
                     <input
+                        id="confirmPassword"
                         type="password"
                         name="confirmPassword"
                         value={user.confirmPassword}

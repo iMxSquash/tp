@@ -1,27 +1,62 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit';
 
-const initialState = {
-    data: [],
-    loading: false,
-    error: null
-}
-
-export const Article = createSlice({
-    name: "Article",
-    initialState,
+const articleSlice = createSlice({
+    name: 'article',
+    initialState: {
+        articles: [],
+        currentArticle: null,
+        loading: false,
+        error: null
+    },
     reducers: {
         FETCH_ARTICLE_START: (state) => {
             state.loading = true;
-        },
-
-        FETCH_ARTICLE_SUCCESS: (state, action) => {
-            state.data = action.payload;
-            state.loading = false;
             state.error = null;
         },
-
+        FETCH_ARTICLE_SUCCESS: (state, action) => {
+            state.articles = action.payload;
+            state.loading = false;
+        },
+        FETCH_SINGLE_ARTICLE_SUCCESS: (state, action) => {
+            state.currentArticle = action.payload;
+            state.loading = false;
+        },
+        FETCH_ARTICLE_ERROR: (state, action) => {
+            state.error = action.payload;
+            state.loading = false;
+        },
+        ADD_ARTICLE_SUCCESS: (state, action) => {
+            state.articles.push(action.payload);
+        },
+        UPDATE_ARTICLE_SUCCESS: (state, action) => {
+            state.currentArticle = action.payload;
+            const index = state.articles.findIndex(article => article._id === action.payload._id);
+            if (index !== -1) {
+                state.articles[index] = action.payload;
+            }
+        },
+        DELETE_ARTICLE_SUCCESS: (state, action) => {
+            state.articles = state.articles.filter(article => article._id !== action.payload);
+        },
+        UPDATE_ARTICLE_FIELD: (state, action) => {
+            state.currentArticle = action.payload;
+        },
+        RESET_CURRENT_ARTICLE: (state) => {
+            state.currentArticle = null;
+        }
     }
-})
+});
 
-export const { FETCH_ARTICLE_START, FETCH_ARTICLE_SUCCESS } = Article.actions
-export default Article.reducer
+export const {
+    FETCH_ARTICLE_START,
+    FETCH_ARTICLE_SUCCESS,
+    FETCH_SINGLE_ARTICLE_SUCCESS,
+    FETCH_ARTICLE_ERROR,
+    ADD_ARTICLE_SUCCESS,
+    UPDATE_ARTICLE_SUCCESS,
+    DELETE_ARTICLE_SUCCESS,
+    UPDATE_ARTICLE_FIELD,
+    RESET_CURRENT_ARTICLE
+} = articleSlice.actions;
+
+export default articleSlice.reducer;

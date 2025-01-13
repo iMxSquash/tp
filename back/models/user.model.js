@@ -20,7 +20,11 @@ const userSchema = mongoose.Schema(
     isActive: {
       type: Boolean,
       required : true, 
-    }, 
+    },
+    isVerified: {
+      type: Boolean,
+      required : false, 
+    },
     password: { 
       type: String, 
       required: true 

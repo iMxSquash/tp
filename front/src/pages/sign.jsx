@@ -1,24 +1,17 @@
-import { useState, useContext } from 'react';
+import { useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { AuthContext } from '../context/AuthContext';
-import axios from 'axios';
+import { UPDATE_AUTH_FIELD, SET_AUTH_ERROR } from '../redux/reducers/auth.reducer';
 
 const Sign = () => {
-    const [User, setUser] = useState({
-        email: '',
-        password: ''
-    });
-    const [error, setError] = useState(null);
+    const dispatch = useDispatch();
+    const user = useSelector(state => state.auth.user);
+    const error = useSelector(state => state.auth.error);
     const { login } = useContext(AuthContext);
 
-    const api = axios.create({
-        baseURL: 'http://localhost:8000/api',
-        withUser: true
-    });
-
     const handleChange = (e) => {
-        setUser(prev => ({
-            ...prev,
+        dispatch(UPDATE_AUTH_FIELD({
             [e.target.name]: e.target.value
         }));
     };
@@ -26,10 +19,15 @@ const Sign = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const { data } = await api.post('/user/sign', User);
-            await login(data);
+            const result = await login({
+                email: user.email,
+                password: user.password
+            });
+            if (!result.success) {
+                dispatch(SET_AUTH_ERROR(result.error));
+            }
         } catch (error) {
-            setError(error.response?.data?.message || "Erreur de connexion");
+            dispatch(SET_AUTH_ERROR("Une erreur s'est produite lors de la connexion"));
         }
     };
 
@@ -39,22 +37,24 @@ const Sign = () => {
             {error && <p style={{ color: 'red' }}>{error}</p>}
             <form onSubmit={handleSubmit}>
                 <div>
-                    <label>Email:</label>
+                    <label htmlFor="email">Email:</label>
                     <input
+                        id="email"
                         type="email"
                         name="email"
-                        value={User.email}
+                        value={user.email}
                         onChange={handleChange}
                         placeholder="Entrez votre email"
                         required
                     />
                 </div>
                 <div>
-                    <label>Mot de passe:</label>
+                    <label htmlFor="password">Mot de passe:</label>
                     <input
+                        id="password"
                         type="password"
                         name="password"
-                        value={User.password}
+                        value={user.password}
                         onChange={handleChange}
                         placeholder="Entrez votre mot de passe"
                         required

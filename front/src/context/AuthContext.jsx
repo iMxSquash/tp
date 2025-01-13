@@ -2,7 +2,12 @@ import { createContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-export const AuthContext = createContext();
+export const AuthContext = createContext({
+    auth: null,
+    login: () => { },
+    logout: () => { },
+    loading: true
+});
 
 export const AuthProvider = ({ children }) => {
     const [auth, setAuth] = useState(null);
@@ -14,46 +19,39 @@ export const AuthProvider = ({ children }) => {
         withCredentials: true
     });
 
-    // useEffect(() => {
-    //     const checkAuth = async () => {
-    //         try {
-    //             const { data } = await api.get('/user/check');
-    //             setAuth(data);
-    //         } catch (error) {
-    //             console.error("Erreur d'authentification:", error);
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-    //     checkAuth();
-    // }, []);
-
-    const login = async (credentials) => {
+    const login = async (dataForm) => {
+        setLoading(true);
         try {
-            const { data } = await api.post('/user/sign', credentials);
-            setAuth(data);
-            navigate('/');
-            return { success: true };
+            const { data, status } = await api.post('/user/sign', dataForm);
+            if (status === 200) {
+                localStorage.setItem('auth', JSON.stringify(data));
+                setAuth(data);
+                navigate('/');
+                setLoading(false);
+            }
         } catch (error) {
-            return { 
-                success: false, 
-                error: error.response?.data?.message || "Erreur de connexion au serveur" 
-            };
+            console.log("Erreur lors de la connexion:", error);
+            setLoading(false);
         }
     };
 
     const logout = async () => {
+        setLoading(true);
         try {
-            await api.post('/user/logout');
+            await api.get('/user/logout');
+            localStorage.removeItem('auth');
             setAuth(null);
+            navigate('/login');
+            setLoading(false);
         } catch (error) {
-            console.error("Erreur lors de la déconnexion:", error);
+            console.log("Erreur lors de la déconnexion:", error);
+            setLoading(false);
         }
     };
 
     return (
         <AuthContext.Provider value={{ auth, login, logout, loading }}>
-            {!loading && children}
+            {children}
         </AuthContext.Provider>
     );
 };

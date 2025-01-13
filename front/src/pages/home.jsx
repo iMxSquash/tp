@@ -5,11 +5,11 @@ import * as ACTIONS from "../redux/reducers/article.reducer";
 import axios from 'axios';
 
 const Home = () => {
-    const [article, setArticle] = useState([]);
-    const [error, setError] = useState(null);
-
-    const dispatch = useDispatch()
-
+    const dispatch = useDispatch();
+    const articles = useSelector((state) => state.article.articles);
+    const loading = useSelector((state) => state.article.loading);
+    const error = useSelector((state) => state.article.error);
+    
     const api = axios.create({
         baseURL: 'http://localhost:8000/api',
     });
@@ -19,28 +19,28 @@ const Home = () => {
             dispatch(ACTIONS.FETCH_ARTICLE_START());
             try {
                 const { data } = await api.get("/article/all");
-                console.log(data);
                 dispatch(ACTIONS.FETCH_ARTICLE_SUCCESS(data));
             } catch (error) {
-                console.log(error.response?.data?.message);
+                dispatch(ACTIONS.FETCH_ARTICLE_ERROR(error.response?.data?.message));
             }
         };
         fetchArticle();
     }, []);
 
-    if (error) return <><p>{error}</p></>
+    if (loading) return <p>Chargement...</p>;
+    if (error) return <p>{error}</p>;
 
     return (
         <>
             <h1>Bienvenue sur ma page d'accueil</h1>
-            {article.map((item) => (
+            {articles.map((item) => (
                 <div key={item._id}>
                     <h2>{item.name}</h2>
-                    <Link to={{ pathname: `/detail/${item._id}` }}>
+                    <Link to={`/detail/${item._id}`}>
                         <img src={item.picture.img} alt={item.name} width={200} />
                     </Link>
                     <p>{item.price}</p>
-                    <Link to={{ pathname: `/update/${item._id}` }}>Update</Link>
+                    <Link to={`/update/${item._id}`}>Update</Link>
                 </div>
             ))}
         </>

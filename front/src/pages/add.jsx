@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { ADD_ARTICLE_SUCCESS, FETCH_ARTICLE_ERROR, UPDATE_ARTICLE_FIELD } from '../redux/reducers/article.reducer';
 import axios from 'axios';
 
 const AddArticle = () => {
     const imgInput = ['img', 'img1', 'img2', 'img3', 'img4'];
-    const [article, setArticle] = useState({
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const article = useSelector(state => state.article.currentArticle) || {
         name: '',
         content: '',
         category: '',
@@ -12,7 +17,7 @@ const AddArticle = () => {
         img: [],
         status: true,
         stock: 0
-    });
+    };
 
     const api = axios.create({
         baseURL: 'http://localhost:8000/api',
@@ -23,14 +28,17 @@ const AddArticle = () => {
         const { name, value, files } = e.target;
 
         if (name.startsWith('img')) {
-            setArticle(prev => ({
-                ...prev,
-                img: files ? [...prev.img, files[0]] : prev.img,
+            dispatch(UPDATE_ARTICLE_FIELD({
+                ...article,
+                img: files ? [...article.img, files[0]] : article.img,
             }));
         } else {
-            setArticle(prev => ({ ...prev, [name]: value }));
+            dispatch(UPDATE_ARTICLE_FIELD({
+                ...article,
+                [name]: value
+            }));
         }
-    }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -49,17 +57,13 @@ const AddArticle = () => {
         });
 
         try {
-            const response = await api.post(
-                `/article/add`,
-                formData,
-                {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
-                }
-            );
+            const { data } = await api.post('/article/add', formData, {
+                headers: { "Content-Type": "multipart/form-data" }
+            });
+            dispatch(ADD_ARTICLE_SUCCESS(data));
+            navigate('/');
         } catch (error) {
-            console.error(error.message);
+            dispatch(FETCH_ARTICLE_ERROR(error.message));
         }
     };
 
@@ -125,9 +129,10 @@ const AddArticle = () => {
                     type="checkbox"
                     name="status"
                     checked={article.status}
-                    onChange={e => setArticle(prev => (
-                        { ...prev, status: e.target.checked }
-                    ))}
+                    onChange={e => dispatch(ADD_ARTICLE_SUCCESS({
+                        ...article,
+                        status: e.target.checked
+                    }))}
                 />
 
                 <button>Ajouter l'article</button>
@@ -135,4 +140,5 @@ const AddArticle = () => {
         </>
     );
 };
+
 export default AddArticle;
