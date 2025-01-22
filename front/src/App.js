@@ -1,5 +1,4 @@
 import { Route, Routes } from "react-router-dom";
-import { AuthProvider } from "./context/AuthContext";
 import './App.css';
 import Home from "./pages/home";
 import Detail from "./pages/detail";

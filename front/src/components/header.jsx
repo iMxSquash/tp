@@ -15,7 +15,7 @@ const Header = () => {
                 <div className="nav-right">
                     {auth ? (
                         <>
-                            <span>Bienvenue, {auth.username}</span>
+                            <span>Bienvenue, {auth.prenom}</span>
                             <button onClick={logout}>Déconnexion</button>
                         </>
                     ) : (

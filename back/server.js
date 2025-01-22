@@ -2,7 +2,7 @@ const dotenv = require('dotenv');
 const fs = require('fs');
 const multer =  require('multer'); 
 const path = require('path');
-const nodemailer = require('nodemailer'); 
+const nodemailer = require('nodemailer');
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken');
 const express = require('express')
@@ -261,13 +261,46 @@ const verifyEmail = async (req, res, next) => {
   try {
     const { token } = req.params;
     const decoded = jwt.verify(token, env.TOKEN);
-    await Model.findByIdAndUpdate(decoded.id, { isVerified: true } , {
-      new: true,
-    });    
-    res.status(200).json({ message: 'Email vérifié avec succès !' });
+    const updatedUser = await Model.findByIdAndUpdate(
+      decoded.id, 
+      { isVerified: true },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ 
+        success: false,
+        message: 'Utilisateur non trouvé',
+        isVerified: false
+      });
+    }
+
+    res.status(200).json({ 
+      success: true,
+      message: 'Email vérifié avec succès !',
+      isVerified: updatedUser.isVerified 
+    });
   } catch (error) {
-    console.error('Erreur de vérification:', error);
-    res.status(400).json({ message: 'Lien invalide ou expiré.' });
+    console.error('Erreur détaillée:', error);
+    if (error.name === 'JsonWebTokenError') {
+      return res.status(400).json({ 
+        success: false,
+        message: 'Token invalide',
+        error: error.message 
+      });
+    }
+    if (error.name === 'TokenExpiredError') {
+      return res.status(400).json({ 
+        success: false,
+        message: 'Le lien de vérification a expiré',
+        error: error.message 
+      });
+    }
+    res.status(400).json({ 
+      success: false,
+      message: 'Erreur lors de la vérification',
+      error: error.message 
+    });
   }
 };
 
@@ -304,7 +337,18 @@ const sign = async (req, res, next) => {
   }
 }
 
-
+const logout = async (req, res) => {
+  try {
+    res.clearCookie('access_token', {
+      secure: false,
+      sameSite: 'strict'
+    });
+    res.status(200).json({ message: "Déconnexion réussie" });
+  } catch (error) {
+    console.error('Erreur lors de la déconnexion:', error);
+    res.status(500).json({ message: "Erreur lors de la déconnexion" });
+  }
+};
 
 const getUsers = async (req, res) => {
   try{
@@ -441,6 +485,7 @@ routerUser.get("/get/:id", getUserById);
 routerUser.put("/delete/:id",verifieToken, deleteUser);
 routerUser.put("/reactivate/:id", verifieToken, reactivateUser)
 routerUser.put("/update/:id",verifieToken, updateUser);
+routerUser.get("/logout", logout);
 
 routerAvis.post('/add/:articleId',verifieToken, postAvis)
 routerAvis.delete('/delete/:avisId', verifieToken, deleteAvis)

@@ -20,25 +20,27 @@ const Verify = () => {
         const verifyAccount = async () => {
             try {
                 const response = await api.put(`/user/verify/${token}`);
-                if (response.data.isVerified) {
+                
+                if (response.data.success) {
                     setVerificationStatus({
                         isLoading: false,
                         error: null,
                         success: true,
-                        message: response.data.message || 'Email vérifié avec succès !'
+                        message: response.data.message
                     });
                     setTimeout(() => {
                         navigate('/sign');
                     }, 3000);
                 } else {
-                    throw new Error('La vérification a échoué');
+                    throw new Error(response.data.message || 'La vérification a échoué');
                 }
             } catch (error) {
+                console.error('Erreur complète:', error);
                 setVerificationStatus({
                     isLoading: false,
                     error: true,
                     success: false,
-                    message: error.response?.data?.message || "Erreur lors de la vérification de l'email"
+                    message: error.response?.data?.message || error.message || "Erreur lors de la vérification de l'email"
                 });
             }
         };

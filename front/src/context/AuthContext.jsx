@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from 'react';
+import { createContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }) => {
             await api.get('/user/logout');
             localStorage.removeItem('auth');
             setAuth(null);
-            navigate('/login');
+            navigate('/sign');
             setLoading(false);
         } catch (error) {
             console.log("Erreur lors de la déconnexion:", error);
