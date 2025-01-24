@@ -380,7 +380,7 @@ const deleteUser = async (req, res, next) => {
   }catch(error){
     console.log(error)
   }
-}  
+};
 
 const reactivateUser = async (req, res, next) => {
   try {
@@ -466,7 +466,6 @@ const updateAvis = async (req, res) => {
   }
 };
 
-
 routerArticle.post("/add", upload.array('img', 5), postArticle);
 routerArticle.get("/all", getAllArticle);
 routerArticle.get("/get/:id", oneArticle);
@@ -477,7 +476,7 @@ routerArticle.get("/desc", descArticle);
 routerArticle.get("/avis/:id", avisByArticle);
 routerArticle.get("/note", sortedByNote);
 
-routerUser.post("/signup",  signup);
+routerUser.post("/signup", signup);
 routerUser.post("/sign", sign);
 routerUser.put("/verify/:token", verifyEmail)
 routerUser.get("/get", getUsers);

@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import './App.css';
 import Home from "./pages/home";
 import Detail from "./pages/detail";
@@ -8,6 +8,7 @@ import Register from "./pages/register";
 import Sign from "./pages/sign";
 import Header from "./components/header";
 import Verify from "./pages/verify";
+import DashboardUser from "./pages/admin/dashboard-user";
 
 function App() {
   return (
@@ -21,6 +22,8 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/sign" element={<Sign />} />
         <Route path="/verify/:token" element={<Verify />} />
+        <Route path="/admin/user" element={<DashboardUser />} />
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </>
   );
