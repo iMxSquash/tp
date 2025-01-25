@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import * as ACTIONS from "../redux/reducers/article.reducer";
 import axios from 'axios';
 import Loader from '../components/Loader';
+import ImageSlider from '../components/ImageSlider';
 
 const Detail = () => {
     const dispatch = useDispatch();
@@ -49,9 +50,9 @@ const Detail = () => {
         <div className="detail-container">
             <div className="detail-content">
                 <div className="detail-image-container">
-                    <img 
-                        src={`http://localhost:8000${article.picture.img}`} 
-                        alt={article.name} 
+                    <ImageSlider 
+                        images={article.picture?.img ? [article.picture.img] : []} 
+                        baseUrl="http://localhost:8000"
                     />
                 </div>
                 

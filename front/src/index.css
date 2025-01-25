@@ -702,3 +702,54 @@ input, select, textarea, button {
   font-size: var(--font-size-2xl);
   font-weight: var(--font-weight-bold);
 }
+
+/* Add Article Page Layout */
+.add-page-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-lg);
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+    .add-page-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Slider Styles */
+.slider-container {
+    margin-bottom: var(--spacing-md);
+}
+
+.slide-item {
+    padding: var(--spacing-xs);
+}
+
+.slide-item img {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    border-radius: var(--border-radius);
+}
+
+.slick-prev, .slick-next {
+    z-index: 1;
+}
+
+.slick-prev {
+    left: 10px;
+}
+
+.slick-next {
+    right: 10px;
+}
+
+.slick-dots {
+    bottom: 10px;
+}
+
+.slick-dots li button:before {
+    color: var(--color-white);
+}
