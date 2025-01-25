@@ -9,6 +9,7 @@ import Sign from "./pages/sign";
 import Header from "./components/header";
 import Verify from "./pages/verify";
 import DashboardUser from "./pages/admin/dashboard-user";
+import ProtectedAdminRoute from './context/ProtectedAdminRoute';
 
 function App() {
   return (
@@ -22,7 +23,14 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/sign" element={<Sign />} />
         <Route path="/verify/:token" element={<Verify />} />
-        <Route path="/admin/user" element={<DashboardUser />} />
+        <Route
+          path="/admin/user"
+          element={
+            <ProtectedAdminRoute>
+              <DashboardUser />
+            </ProtectedAdminRoute>
+          }
+        />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </>

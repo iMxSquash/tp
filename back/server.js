@@ -239,19 +239,19 @@ const sortedByNote = async (req, res) => {
 
 
 const signup = async (req, res, next) => {
-  try{
+  try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10)
-    console.log(req.body);
-    
     const user = await Model.create({
       ...req.body,
       password: hashedPassword,
       isVerified: false,
+      isActive: true, // Assurez-vous que l'utilisateur est actif par défaut
+      role: req.body.role || 'user' // Utilise le rôle fourni ou 'user' par défaut
     })
     const verificationToken = jwt.sign({ id: user._id }, env.TOKEN, { expiresIn: '1d' });
     await sendEmail(req.body, verificationToken)
     res.status(201).json({message: 'User add and Email envoyé'})
-  }catch(err){
+  } catch(err) {
     console.error('Erreur : ', err);
     next(createError(500, err))
   }
@@ -420,6 +420,47 @@ const updateUser = async (req, res, next) => {
   }
 }
 
+const updateUserAdmin = async (req, res) => {
+  try {
+    const userUpdated = await Model.findByIdAndUpdate(
+      req.params.id,
+      { $set: req.body },
+      { new: true }
+    );
+    if (!userUpdated) return res.status(404).json("User not found!");
+    res.status(200).json(userUpdated);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Error updating user" });
+  }
+};
+
+const adminDeactivateUser = async (req, res) => {
+  try {
+    const user = await Model.findById(req.params.id);
+    if (!user) return res.status(404).json("User not found.");
+    user.isActive = false;
+    await user.save();
+    res.status(200).json(`User with id ${req.params.id} has been deactivated.`);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Error deactivating user" });
+  }
+};
+
+const adminReactivateUser = async (req, res) => {
+  try {
+    const user = await Model.findById(req.params.id);
+    if (!user) return res.status(404).json("User not found.");
+    user.isActive = true;
+    await user.save();
+    res.status(200).json(`User with id ${req.params.id} has been reactivated.`);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Error reactivating user" });
+  }
+};
+
 const postAvis = async (req, res ) => {
   try{
     const avis = await Avis.create({...req.body, user: req.user.id})
@@ -485,6 +526,10 @@ routerUser.put("/delete/:id",verifieToken, deleteUser);
 routerUser.put("/reactivate/:id", verifieToken, reactivateUser)
 routerUser.put("/update/:id",verifieToken, updateUser);
 routerUser.get("/logout", logout);
+
+routerUser.put("/admin/update/:id", updateUserAdmin);
+routerUser.put("/admin/deactivate/:id", adminDeactivateUser);
+routerUser.put("/admin/reactivate/:id", adminReactivateUser);
 
 routerAvis.post('/add/:articleId',verifieToken, postAvis)
 routerAvis.delete('/delete/:avisId', verifieToken, deleteAvis)

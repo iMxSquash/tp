@@ -9,7 +9,7 @@ const DashboardUser = () => {
     const [editingUser, setEditingUser] = useState(null);
     const [selectedUser, setSelectedUser] = useState(null);
     const [formData, setFormData] = useState({
-        username: '',
+        prenom: '',
         email: '',
         role: ''
     });
@@ -29,16 +29,16 @@ const DashboardUser = () => {
 
     const handleDelete = async (userId) => {
         try {
-            await axios.put(`http://localhost:8000/api/user/delete/${userId}`);
+            await axios.put(`http://localhost:8000/api/user/admin/deactivate/${userId}`);
             fetchUsers();
         } catch (error) {
-            console.error('Erreur lors de la suppression:', error);
+            console.error('Erreur lors de la désactivation:', error);
         }
     };
 
     const handleReactivate = async (userId) => {
         try {
-            await axios.put(`http://localhost:8000/api/user/reactivate/${userId}`);
+            await axios.put(`http://localhost:8000/api/user/admin/reactivate/${userId}`);
             fetchUsers();
         } catch (error) {
             console.error('Erreur lors de la réactivation:', error);
@@ -57,7 +57,7 @@ const DashboardUser = () => {
     const handleEdit = (user) => {
         setEditingUser(user);
         setFormData({
-            username: user.username,
+            prenom: user.prenom,
             email: user.email,
             role: user.role
         });
@@ -66,7 +66,10 @@ const DashboardUser = () => {
     const handleUpdate = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.put(`http://localhost:8000/api/user/update/${editingUser._id}`, formData);
+            const response = await axios.put(
+                `http://localhost:8000/api/user/admin/update/${editingUser._id}`, 
+                formData
+            );
             dispatch(updateUser(response.data));
             setEditingUser(null);
             fetchUsers();
@@ -82,7 +85,7 @@ const DashboardUser = () => {
             <table className="min-w-full bg-white border">
                 <thead>
                     <tr>
-                        <th className="p-2 border">Username</th>
+                        <th className="p-2 border">Prenom</th>
                         <th className="p-2 border">Email</th>
                         <th className="p-2 border">Rôle</th>
                         <th className="p-2 border">Statut</th>
@@ -92,7 +95,7 @@ const DashboardUser = () => {
                 <tbody>
                     {users.map((user) => (
                         <tr key={user._id} className={!user.isActive ? 'bg-gray-200' : ''}>
-                            <td className="p-2 border">{user.username}</td>
+                            <td className="p-2 border">{user.prenom}</td>
                             <td className="p-2 border">{user.email}</td>
                             <td className="p-2 border">{user.role}</td>
                             <td className="p-2 border">
@@ -135,7 +138,7 @@ const DashboardUser = () => {
             {selectedUser && (
                 <div className="mt-4 p-4 border rounded">
                     <h2 className="text-xl font-bold mb-2">Détails de l'utilisateur</h2>
-                    <p>Username: {selectedUser.username}</p>
+                    <p>prenom: {selectedUser.prenom}</p>
                     <p>Email: {selectedUser.email}</p>
                     <p>Rôle: {selectedUser.role}</p>
                     <p>Statut: {selectedUser.isActive ? 'Actif' : 'Inactif'}</p>
@@ -154,10 +157,10 @@ const DashboardUser = () => {
                     <form onSubmit={handleUpdate} className="space-y-2">
                         <input
                             type="text"
-                            value={formData.username}
-                            onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                            value={formData.prenom}
+                            onChange={(e) => setFormData({ ...formData, prenom: e.target.value })}
                             className="border p-2 w-full"
-                            placeholder="Username"
+                            placeholder="Prenom"
                         />
                         <input
                             type="email"
