@@ -68,76 +68,110 @@ const AddArticle = () => {
     };
 
     return (
-        <>
-            <h1>ADD ARTICLE</h1>
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    name="name"
-                    onChange={handleChange}
-                    placeholder="Nom de l'article"
-                    required
-                />
-                <textarea
-                    name="content"
-                    onChange={handleChange}
-                    placeholder="Description"
-                    required
-                />
-                <input
-                    type="text"
-                    name="category"
-                    onChange={handleChange}
-                    placeholder="Catégorie"
-                    required
-                />
-                <input
-                    type="text"
-                    name="brand"
-                    onChange={handleChange}
-                    placeholder="Marque"
-                    required
-                />
-                <input
-                    type="number"
-                    name="price"
-                    onChange={handleChange}
-                    placeholder="Prix"
-                    required
-                />
-                {imgInput.map((imgName, index) => (
-                    <div key={imgName}>
-                        <label>
-                            {index === 0 ? "Image principale (URL):" : `Image ${index} (URL):`}
-                        </label>
-                        <input
-                            type="file"
-                            name={imgName}
-                            onChange={handleChange}
-                            placeholder={`Image ${imgName.slice(-1)}`}
-                        />
+        <div className="container">
+            <div className="add-form">
+                <h1>Ajouter un article</h1>
+                <form onSubmit={handleSubmit}>
+                    <div className="form-row">
+                        <div className="form-group">
+                            <input
+                                type="text"
+                                name="name"
+                                onChange={handleChange}
+                                placeholder="Nom de l'article"
+                                className="form-control"
+                                required
+                            />
+                        </div>
+                        <div className="form-group">
+                            <textarea
+                                name="content"
+                                onChange={handleChange}
+                                placeholder="Description"
+                                className="form-control"
+                                required
+                            />
+                        </div>
                     </div>
-                ))}
-                <input
-                    type="number"
-                    name="stock"
-                    onChange={handleChange}
-                    placeholder="Stock"
-                    required
-                />
-                <input
-                    type="checkbox"
-                    name="status"
-                    checked={article.status}
-                    onChange={e => dispatch(ADD_ARTICLE_SUCCESS({
-                        ...article,
-                        status: e.target.checked
-                    }))}
-                />
-
-                <button>Ajouter l'article</button>
-            </form>
-        </>
+                    <div className="form-row">
+                        <div className="form-group">
+                            <input
+                                type="text"
+                                name="category"
+                                onChange={handleChange}
+                                placeholder="Catégorie"
+                                className="form-control"
+                                required
+                            />
+                        </div>
+                        <div className="form-group">
+                            <input
+                                type="text"
+                                name="brand"
+                                onChange={handleChange}
+                                placeholder="Marque"
+                                className="form-control"
+                                required
+                            />
+                        </div>
+                    </div>
+                    <div className="form-row">
+                        <div className="form-group">
+                            <input
+                                type="number"
+                                name="price"
+                                onChange={handleChange}
+                                placeholder="Prix"
+                                className="form-control"
+                                required
+                            />
+                        </div>
+                        <div className="form-group">
+                            <input
+                                type="number"
+                                name="stock"
+                                onChange={handleChange}
+                                placeholder="Stock"
+                                className="form-control"
+                                required
+                            />
+                        </div>
+                    </div>
+                    <div className="image-upload-container">
+                        {imgInput.map((imgName, index) => (
+                            <div key={imgName} className="form-group">
+                                <label>
+                                    {index === 0 ? "Image principale:" : `Image ${index}:`}
+                                </label>
+                                <input
+                                    type="file"
+                                    name={imgName}
+                                    onChange={handleChange}
+                                    className="form-control"
+                                />
+                            </div>
+                        ))}
+                    </div>
+                    <div className="form-group">
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="status"
+                                checked={article.status}
+                                onChange={e => dispatch(UPDATE_ARTICLE_FIELD({
+                                    ...article,
+                                    status: e.target.checked
+                                }))}
+                            />
+                            {" "}Disponible
+                        </label>
+                    </div>
+                    <button type="submit" className="btn btn-primary">
+                        Ajouter l'article
+                    </button>
+                </form>
+            </div>
+        </div>
     );
 };
 

@@ -52,30 +52,36 @@ const Verify = () => {
 
     if (verificationStatus.isLoading) {
         return (
-            <div className="verification-container">
-                <h2>Vérification de votre email en cours...</h2>
-                <p>Veuillez patienter...</p>
+            <div className="container text-center">
+                <div className="card">
+                    <h2 className="mb-2">Vérification de votre email en cours...</h2>
+                    <p>Veuillez patienter...</p>
+                </div>
             </div>
         );
     }
 
     if (verificationStatus.error) {
         return (
-            <div className="verification-container">
-                <h2>Échec de la vérification</h2>
-                <p className="error-message">{verificationStatus.message}</p>
-                <button onClick={() => navigate('/sign')}>
-                    Retour à la connexion
-                </button>
+            <div className="container text-center">
+                <div className="card">
+                    <h2 className="mb-2">Échec de la vérification</h2>
+                    <p className="text-danger mb-2">{verificationStatus.message}</p>
+                    <button onClick={() => navigate('/sign')} className="btn btn-primary">
+                        Retour à la connexion
+                    </button>
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="verification-container">
-            <h2>Félicitations !</h2>
-            <p>{verificationStatus.message}</p>
-            <p>Redirection vers la page de connexion dans quelques secondes...</p>
+        <div className="container text-center">
+            <div className="card">
+                <h2 className="mb-2">Félicitations !</h2>
+                <p className="text-success mb-2">{verificationStatus.message}</p>
+                <p>Redirection vers la page de connexion dans quelques secondes...</p>
+            </div>
         </div>
     );
 };

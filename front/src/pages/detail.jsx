@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import * as ACTIONS from "../redux/reducers/article.reducer";
 import axios from 'axios';
+import Loader from '../components/Loader';
 
 const Detail = () => {
     const dispatch = useDispatch();
@@ -40,26 +41,49 @@ const Detail = () => {
         }
     };
 
-    if (loading) return <p>Chargement...</p>;
+    if (loading) return <Loader />;
     if (error) return <p>{error}</p>;
     if (!article) return <p>Article non trouvé</p>;
 
     return (
-        <>
-            <h1>Détails de l'article</h1>
-            <h2>{article.name}</h2>
-            <img src={`http://localhost:8000${article.picture.img}`} alt={article.name} width={200} />
-            <p>{article.price}€</p>
-            <p>{article.description}</p>
-            <p>{article.category}</p>
-            <p>{article.brand}</p>
-            <p>{article.stock} en stock</p>
-            <p>{article.status ? 'Disponible' : 'Indisponible'}</p>
-            <button onClick={deleteArticle}>Supprimer l'article</button>
-            <Link to={`/update/${id}`}>
-                <button>Modifier l'article</button>
-            </Link>
-        </>
+        <div className="detail-container">
+            <div className="detail-content">
+                <div className="detail-image-container">
+                    <img 
+                        src={`http://localhost:8000${article.picture.img}`} 
+                        alt={article.name} 
+                    />
+                </div>
+                
+                <div className="detail-info">
+                    <h1>{article.name}</h1>
+                    <p className="price">{article.price}€</p>
+                    <p className="mb-2">{article.content}</p>
+                    
+                    <div className="mb-2">
+                        <strong>Catégorie:</strong> {article.category}
+                    </div>
+                    <div className="mb-2">
+                        <strong>Marque:</strong> {article.brand}
+                    </div>
+                    <div className="mb-2">
+                        <strong>Stock:</strong> {article.stock}
+                    </div>
+                    <div className="mb-2">
+                        <strong>Statut:</strong> {article.status ? 'Disponible' : 'Indisponible'}
+                    </div>
+                    
+                    <div className="detail-actions">
+                        <button onClick={deleteArticle} className="btn btn-danger">
+                            Supprimer
+                        </button>
+                        <Link to={`/update/${id}`} className="btn btn-primary">
+                            Modifier
+                        </Link>
+                    </div>
+                </div>
+            </div>
+        </div>
     );
 };
 

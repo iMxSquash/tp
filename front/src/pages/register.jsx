@@ -41,14 +41,16 @@ const Register = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-md w-full space-y-8">
-                <h1>Inscription</h1>
-                {error && <p style={{ color: 'red' }}>{error}</p>}
-                <form onSubmit={handleSubmit} className="mt-8 space-y-6">
-                    <div>
+        <div className="container">
+            <div className="form-container card">
+                <h1 className="text-center mb-2">Inscription</h1>
+                {error && <p className="text-danger text-center">{error}</p>}
+                
+                <form onSubmit={handleSubmit}>
+                    <div className="form-group">
                         <label htmlFor="prenom">Nom d'utilisateur:</label>
                         <input
+                            className="form-control"
                             id="prenom"
                             type="text"
                             name="prenom"
@@ -58,9 +60,11 @@ const Register = () => {
                             required
                         />
                     </div>
-                    <div>
+
+                    <div className="form-group">
                         <label htmlFor="email">Email:</label>
                         <input
+                            className="form-control"
                             id="email"
                             type="email"
                             name="email"
@@ -70,9 +74,11 @@ const Register = () => {
                             required
                         />
                     </div>
-                    <div>
+
+                    <div className="form-group">
                         <label htmlFor="password">Mot de passe:</label>
                         <input
+                            className="form-control"
                             id="password"
                             type="password"
                             name="password"
@@ -82,9 +88,11 @@ const Register = () => {
                             required
                         />
                     </div>
-                    <div>
+
+                    <div className="form-group">
                         <label htmlFor="confirmPassword">Confirmer le mot de passe:</label>
                         <input
+                            className="form-control"
                             id="confirmPassword"
                             type="password"
                             name="confirmPassword"
@@ -94,22 +102,21 @@ const Register = () => {
                             required
                         />
                     </div>
-                    <div>
+
+                    <div className="form-group">
+                        <label htmlFor="role">Rôle:</label>
                         <select
+                            className="form-control"
+                            id="role"
                             value={user.role}
                             onChange={(e) => setUser({ ...user, role: e.target.value })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md"
                         >
                             <option value="user">Utilisateur</option>
                             <option value="admin">Administrateur</option>
                         </select>
                     </div>
-                    <button
-                        type="submit"
-                        className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
-                    >
-                        S'inscrire
-                    </button>
+
+                    <button type="submit" className="btn btn-primary">S'inscrire</button>
                 </form>
                 <Link to="/sign">Déjà inscrit ? Connectez-vous</Link>
             </div>
