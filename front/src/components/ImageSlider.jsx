@@ -3,7 +3,6 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 const ImageSlider = ({ images, baseUrl = '' }) => {
-    // Convertir images en tableau s'il ne l'est pas déjà
     const imageArray = Array.isArray(images) ? images : [images].filter(Boolean);
 
     if (!imageArray || imageArray.length === 0) {

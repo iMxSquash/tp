@@ -9,7 +9,7 @@ const Register = () => {
         password: '',
         prenom: '',
         isActive: true,
-        role: 'user' // Ajout du champ role
+        role: 'user'
     });
     const [error, setError] = useState(null);
 

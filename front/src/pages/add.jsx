@@ -15,7 +15,7 @@ const AddArticle = () => {
         category: '',
         brand: '',
         price: 0,
-        img: [], // S'assurer que img est toujours un tableau
+        img: [],
         status: true,
         stock: 0
     };
