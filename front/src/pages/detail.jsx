@@ -51,7 +51,7 @@ const Detail = () => {
             <div className="detail-content">
                 <div className="detail-image-container">
                     <ImageSlider
-                        images={article.picture?.img ? [article.picture.img] : []}
+                        images={article.picture ? Object.values(article.picture) : []}
                         baseUrl="http://localhost:8000"
                     />
                 </div>

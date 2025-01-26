@@ -3,8 +3,6 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 const ImageSlider = ({ images, baseUrl = '' }) => {
-    const imageArray = Array.isArray(images) ? images : [images].filter(Boolean);
-
     const settings = {
         dots: true,
         infinite: true,
@@ -15,16 +13,16 @@ const ImageSlider = ({ images, baseUrl = '' }) => {
         autoplaySpeed: 3000
     };
 
-    if (!imageArray || imageArray.length === 0) {
+    if (!images || images.length === 0) {
         return null;
     }
 
-    if (imageArray.length === 1) {
+    if (images.length === 1) {
         return (
             <div className="slider-container">
                 <div className="slide-item">
                     <img 
-                        src={typeof imageArray[0] === 'string' ? `${baseUrl}${imageArray[0]}` : URL.createObjectURL(imageArray[0])} 
+                        src={`${baseUrl}${images[0]}`}
                         alt="Vue principale"
                     />
                 </div>
@@ -35,10 +33,10 @@ const ImageSlider = ({ images, baseUrl = '' }) => {
     return (
         <div className="slider-container">
             <Slider {...settings}>
-                {imageArray.map((img, index) => (
+                {images.map((imgPath, index) => (
                     <div key={index} className="slide-item">
                         <img 
-                            src={typeof img === 'string' ? `${baseUrl}${img}` : URL.createObjectURL(img)} 
+                            src={`${baseUrl}${imgPath}`} 
                             alt={`Slide ${index + 1}`}
                         />
                     </div>
