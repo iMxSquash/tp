@@ -182,6 +182,24 @@ code {
   padding: var(--spacing-sm);
   box-shadow: var(--shadow-md);
   z-index: 1000;
+  width: max-content;
+}
+
+.dropdown-item {
+  padding: var(--spacing-sm);
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background-color: var(--color-light);
+  border-radius: var(--border-radius);
+}
+
+.dropdown-item a {
+  color: var(--color-dark);
+  text-decoration: none;
+  display: block;
+  width: 100%;
 }
 
 .dropdown-menu a {
