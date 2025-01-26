@@ -3,8 +3,8 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import * as ACTIONS from "../redux/reducers/article.reducer";
 import axios from 'axios';
-import Loader from '../components/loader';
-import ImageSlider from '../components/imageSlider';
+import Loader from '../components/Loader';
+import ImageSlider from '../components/ImageSlider';
 
 const Detail = () => {
     const dispatch = useDispatch();
@@ -52,7 +52,7 @@ const Detail = () => {
                 <div className="detail-image-container">
                     <ImageSlider
                         images={article.picture?.img ? [article.picture.img] : []}
-                        baseUrl="http://localhost:8000"
+                        baseUrl={api.baseUrl}
                     />
                 </div>
 

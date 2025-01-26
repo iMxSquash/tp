@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUsers, updateUser } from '../../redux/reducers/user.reducer';
 import axios from 'axios';
-import Loader from '../../components/loader';
+import Loader from '../../components/Loader';
 
 const DashboardUser = () => {
     const dispatch = useDispatch();
@@ -72,7 +72,7 @@ const DashboardUser = () => {
         e.preventDefault();
         try {
             const response = await axios.put(
-                `http://localhost:8000/api/user/admin/update/${editingUser._id}`, 
+                `http://localhost:8000/api/user/admin/update/${editingUser._id}`,
                 formData
             );
             dispatch(updateUser(response.data));
@@ -151,7 +151,7 @@ const DashboardUser = () => {
             {selectedUser && (
                 <div className="modal-overlay">
                     <div className="modal-content">
-                        <button 
+                        <button
                             className="modal-close"
                             onClick={() => setSelectedUser(null)}
                         >
@@ -183,7 +183,7 @@ const DashboardUser = () => {
             {editingUser && (
                 <div className="modal-overlay">
                     <div className="modal-content">
-                        <button 
+                        <button
                             className="modal-close"
                             onClick={() => setEditingUser(null)}
                         >

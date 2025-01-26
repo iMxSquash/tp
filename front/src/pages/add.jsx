@@ -3,7 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { ADD_ARTICLE_SUCCESS, FETCH_ARTICLE_ERROR, UPDATE_ARTICLE_FIELD } from '../redux/reducers/article.reducer';
 import axios from 'axios';
-import ImageSlider from '../components/imageSlider';
+import Loader from '../components/Loader';
+import ImageSlider from '../components/ImageSlider';
 
 const AddArticle = () => {
     const imgInput = ['img', 'img1', 'img2', 'img3', 'img4'];
@@ -19,6 +20,8 @@ const AddArticle = () => {
         status: true,
         stock: 0
     };
+    const loading = useSelector((state) => state.article.loading);
+    const error = useSelector((state) => state.article.error);
 
     const api = axios.create({
         baseURL: 'http://localhost:8000/api',
@@ -67,6 +70,10 @@ const AddArticle = () => {
             dispatch(FETCH_ARTICLE_ERROR(error.message));
         }
     };
+
+    if (loading) return <Loader />;
+    if (error) return <p>{error}</p>;
+    if (!article) return <p>Article non trouvé</p>;
 
     return (
         <div className="container">

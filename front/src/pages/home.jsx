@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import * as ACTIONS from "../redux/reducers/article.reducer";
 import axios from 'axios';
-import Loader from '../components/loader';
+import Loader from '../components/Loader';
 
 const Home = () => {
     const dispatch = useDispatch();
