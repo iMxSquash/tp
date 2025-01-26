@@ -123,15 +123,26 @@ const verifieToken = (req, res, next) => {
 const postArticle = async (req, res) => {
   try {
     const images = req.files; 
-    const pathImgExtrated = images.reduce((acc, file, index) => {
-      if( acc[`img`]) acc[`img${index}`] = `/uploads/${file.filename}`;
-      else acc[`img`] = `/uploads/${file.filename}`;
-      return acc;
-    }, {});
+    let pathImgExtrated = {};
+    
+    if (images && images.length > 0) {
+      pathImgExtrated = images.reduce((acc, file, index) => {
+        if (index === 0) {
+          acc.img = `/uploads/${file.filename}`;
+        } else {
+          acc[`img${index}`] = `/uploads/${file.filename}`;
+        }
+        return acc;
+      }, {});
+    } else {
+      pathImgExtrated = { img: '/uploads/default.jpg' };
+    }
+    
     const article = await Article.create({...req.body, picture: pathImgExtrated });
-    res.status(201).json(`L'article à été crée.`);
+    res.status(201).json(article);
   } catch (err) {
-    res.status(500).json({ error: err  });
+    console.error(err);
+    res.status(500).json({ error: err.message });
   }
 };
 

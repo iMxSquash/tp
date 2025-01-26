@@ -41,7 +41,7 @@ const Home = () => {
                         <h2 className="mb-2">{item.name}</h2>
                         <Link to={`/detail/${item._id}`}>
                             <img
-                                src={`http://localhost:8000${item.picture.img}`}
+                                src={item.picture && item.picture.img ? `http://localhost:8000${item.picture.img}` : `http://localhost:8000${item.picture}`}
                                 alt={item.name}
                                 className="mb-2"
                             />
