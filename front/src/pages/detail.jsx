@@ -52,7 +52,7 @@ const Detail = () => {
                 <div className="detail-image-container">
                     <ImageSlider
                         images={article.picture?.img ? [article.picture.img] : []}
-                        baseUrl={api.baseUrl}
+                        baseUrl="http://localhost:8000"
                     />
                 </div>
 
