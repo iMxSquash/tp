@@ -53,39 +53,34 @@ const DashboardArticles = () => {
     }
   };
 
-  // const handleAdd = async (e) => {
-  //   e.preventDefault();
-  //   setActionLoading(true);
-  //   try {
-  //     await api.post("/add", newArticle);
-  //     setNewArticle({
-  //       name: "",
-  //       price: 0,
-  //       category: "",
-  //       content: "",
-  //       brand: "",
-  //       image: null,
-  //       status: true,
-  //       stock: 0,
-  //     });
-  //     fetchArticles();
-  //   } catch (err) {
-  //     console.error(err);
-  //   } finally {
-  //     setActionLoading(false);
-  //   }
-  // };
-
   const handleEdit = (article) => {
     setEditMode(true);
     setCurrentArticle(article);
+    setNewArticle({
+      name: article.name,
+      price: article.price,
+      category: article.category,
+      content: article.content,
+      brand: article.brand,
+      image: article.image,
+      status: article.status,
+      stock: article.stock,
+    });
   };
 
   const handleUpdate = async (e) => {
     e.preventDefault();
     setActionLoading(true);
+
+    const formData = new FormData();
+    Object.keys(currentArticle).forEach((key) => {
+      formData.append(key, currentArticle[key]);
+    });
+
     try {
-      await api.put(`/update/${currentArticle._id}`, currentArticle);
+      await api.put(`/update/${currentArticle._id}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
       setEditMode(false);
       setCurrentArticle(null);
       fetchArticles();
@@ -193,7 +188,7 @@ const DashboardArticles = () => {
         </table>
       </div>
 
-      {/* Modal pour afficher les détails */}
+      {/* Pour afficher les détails */}
       {selectedArticle && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -217,8 +212,164 @@ const DashboardArticles = () => {
               alt={selectedArticle.name}
               width="200"
             />
-            <p className="form-group">Statut : {selectedArticle.status}</p>
+            <p className="form-group">Status : {selectedArticle.status}</p>
             <p className="form-group">Stock : {selectedArticle.stock}</p>
+          </div>
+        </div>
+      )}
+
+      {currentArticle && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <button
+              className="modal-close"
+              onClick={() => setCurrentArticle(null)}
+            >
+              ×
+            </button>
+            <h2 className="text-xl mb-2">Modifier l'utilisateur</h2>
+            {/* <form onSubmit={handleUpdate} className="form-container">
+              <div className="form-group">
+                <label>Nom:</label>
+                <input
+                  type="text"
+                  value={currentArticle.name}
+                  onChange={(e) =>
+                    setCurrentArticle({
+                      ...currentArticle,
+                      name: e.target.value,
+                    })
+                  }
+                  className="form-control"
+                />
+              </div>
+              <div className="form-group">
+                <label>Description</label>
+                <input
+                  type="text"
+                  value={currentArticle.content}
+                  onChange={(e) =>
+                    setCurrentArticle({
+                      ...currentArticle,
+                      content: e.target.value,
+                    })
+                  }
+                  className="form-control"
+                />
+              </div>
+              <div className="form-group">
+                <label>Image</label>
+                <input
+                  type="file"
+                  onChange={(e) =>
+                    setCurrentArticle({
+                      ...currentArticle,
+                      image: e.target.files[0],
+                    })
+                  }
+                  className="form-control"
+                />
+              </div>
+              <div className="form-group">
+                <label>Statut</label>
+                <select
+                  value={currentArticle.status}
+                  onChange={(e) =>
+                    setCurrentArticle({
+                      ...currentArticle,
+                      status: e.target.value,
+                    })
+                  }
+                  className="form-control"
+                >
+                  <option value="true">Disponible</option>
+                  <option value="false">Indisponible</option>
+                </select>
+              </div>
+              <div className="form-group">
+                <button type="submit" className="btn btn-success mr-2">
+                  Sauvegarder
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCurrentArticle(null)}
+                  className="btn btn-danger"
+                >
+                  Annuler
+                </button>
+              </div>
+            </form> */}
+            <form onSubmit={handleUpdate} className="form-container">
+              <div className="form-group">
+                <label>Nom</label>
+                <input
+                  type="text"
+                  value={currentArticle?.name || ""}
+                  onChange={(e) =>
+                    setCurrentArticle({
+                      ...currentArticle,
+                      name: e.target.value,
+                    })
+                  }
+                  className="form-control"
+                />
+              </div>
+              <div className="form-group">
+                <label>Description</label>
+                <input
+                  type="text"
+                  value={currentArticle?.content || ""}
+                  onChange={(e) =>
+                    setCurrentArticle({
+                      ...currentArticle,
+                      content: e.target.value,
+                    })
+                  }
+                  className="form-control"
+                />
+              </div>
+              <div className="form-group">
+                <label>Statut</label>
+                <select
+                  value={currentArticle?.status}
+                  onChange={(e) =>
+                    setCurrentArticle({
+                      ...currentArticle,
+                      status: e.target.value,
+                    })
+                  }
+                  className="form-control"
+                >
+                  <option value={true}>Disponible</option>
+                  <option value={false}>Indisponible</option>
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Image</label>
+                <input
+                  type="file"
+                  onChange={(e) =>
+                    setCurrentArticle({
+                      ...currentArticle,
+                      image: e.target.files[0],
+                    })
+                  }
+                  className="form-control"
+                />
+              </div>
+              <div className="form-group">
+                <button type="submit" className="btn btn-success mr-2">
+                  Sauvegarder
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCurrentArticle(null)}
+                  className="btn btn-danger"
+                >
+                  Annuler
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
