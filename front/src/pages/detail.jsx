@@ -50,17 +50,17 @@ const Detail = () => {
         <div className="detail-container">
             <div className="detail-content">
                 <div className="detail-image-container">
-                    <ImageSlider 
-                        images={article.picture?.img ? [article.picture.img] : []} 
+                    <ImageSlider
+                        images={article.picture?.img ? [article.picture.img] : []}
                         baseUrl="http://localhost:8000"
                     />
                 </div>
-                
+
                 <div className="detail-info">
                     <h1>{article.name}</h1>
                     <p className="price">{article.price}€</p>
                     <p className="mb-2">{article.content}</p>
-                    
+
                     <div className="mb-2">
                         <strong>Catégorie:</strong> {article.category}
                     </div>
@@ -73,7 +73,7 @@ const Detail = () => {
                     <div className="mb-2">
                         <strong>Statut:</strong> {article.status ? 'Disponible' : 'Indisponible'}
                     </div>
-                    
+
                     <div className="detail-actions">
                         <button onClick={deleteArticle} className="btn btn-danger">
                             Supprimer

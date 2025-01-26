@@ -5,6 +5,16 @@ import "slick-carousel/slick/slick-theme.css";
 const ImageSlider = ({ images, baseUrl = '' }) => {
     const imageArray = Array.isArray(images) ? images : [images].filter(Boolean);
 
+    const settings = {
+        dots: true,
+        infinite: true,
+        speed: 500,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        autoplay: true,
+        autoplaySpeed: 3000
+    };
+
     if (!imageArray || imageArray.length === 0) {
         return null;
     }
@@ -21,16 +31,6 @@ const ImageSlider = ({ images, baseUrl = '' }) => {
             </div>
         );
     }
-
-    const settings = {
-        dots: true,
-        infinite: true,
-        speed: 500,
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        autoplay: true,
-        autoplaySpeed: 3000
-    };
 
     return (
         <div className="slider-container">

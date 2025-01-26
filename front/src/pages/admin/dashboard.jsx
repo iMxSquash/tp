@@ -220,7 +220,7 @@ const DashboardArticles = () => {
               alt={selectedArticle.name}
               width="200"
             />
-            <p className="form-group">Status : {selectedArticle.status}</p>
+            <p className="form-group">Statut : {selectedArticle.status}</p>
             <p className="form-group">Stock : {selectedArticle.stock}</p>
           </div>
         </div>

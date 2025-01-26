@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { ADD_ARTICLE_SUCCESS, FETCH_ARTICLE_ERROR, UPDATE_ARTICLE_FIELD } from '../redux/reducers/article.reducer';
 import axios from 'axios';
+import Loader from '../components/Loader';
 import ImageSlider from '../components/ImageSlider';
 
 const AddArticle = () => {
@@ -19,6 +20,8 @@ const AddArticle = () => {
         status: true,
         stock: 0
     };
+    const loading = useSelector((state) => state.article.loading);
+    const error = useSelector((state) => state.article.error);
 
     const api = axios.create({
         baseURL: 'http://localhost:8000/api',
@@ -67,6 +70,10 @@ const AddArticle = () => {
             dispatch(FETCH_ARTICLE_ERROR(error.message));
         }
     };
+
+    if (loading) return <Loader />;
+    if (error) return <p>{error}</p>;
+    if (!article) return <p>Article non trouvé</p>;
 
     return (
         <div className="container">
@@ -179,7 +186,7 @@ const AddArticle = () => {
                         <h1>{article.name || 'Nom de l\'article'}</h1>
                         <p className="price">{article.price || '0'}€</p>
                         <p className="mb-2">{article.content || 'Description de l\'article'}</p>
-                        
+
                         <div className="mb-2">
                             <strong>Catégorie:</strong> {article.category || '-'}
                         </div>
@@ -192,7 +199,7 @@ const AddArticle = () => {
                         <div className="mb-2">
                             <strong>Statut:</strong> {article.status ? 'Disponible' : 'Indisponible'}
                         </div>
-                        
+
                         {article.img && article.img.length > 0 && (
                             <div className="detail-image-container">
                                 <ImageSlider images={article.img} />
