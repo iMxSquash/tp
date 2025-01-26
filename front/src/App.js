@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import './App.css';
+import "./App.css";
+import React from "react";
 import Home from "./pages/home";
 import Detail from "./pages/detail";
 import AddArticle from "./pages/add";
@@ -9,7 +10,8 @@ import Sign from "./pages/sign";
 import Header from "./components/header";
 import Verify from "./pages/verify";
 import DashboardUser from "./pages/admin/dashboard-user";
-import ProtectedAdminRoute from './context/ProtectedAdminRoute';
+import ProtectedAdminRoute from "./context/ProtectedAdminRoute";
+import Dashboard from "./pages/admin/dashboard";
 
 function App() {
   return (
@@ -28,6 +30,14 @@ function App() {
           element={
             <ProtectedAdminRoute>
               <DashboardUser />
+            </ProtectedAdminRoute>
+          }
+        />
+        <Route
+          path="/admin/article"
+          element={
+            <ProtectedAdminRoute>
+              <Dashboard />
             </ProtectedAdminRoute>
           }
         />
