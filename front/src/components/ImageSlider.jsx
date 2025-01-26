@@ -2,7 +2,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-const ImageSlider = ({ images, baseUrl = '' }) => {
+const ImageSlider = ({ images, baseUrl = '', preview = false }) => {
     const settings = {
         dots: true,
         infinite: true,
@@ -15,6 +15,36 @@ const ImageSlider = ({ images, baseUrl = '' }) => {
 
     if (!images || images.length === 0) {
         return null;
+    }
+
+    if (preview) {
+        if (images.length === 1) {
+            return (
+                <div className="slider-container">
+                    <div className="slide-item">
+                        <img 
+                            src={URL.createObjectURL(images[0])} 
+                            alt="Vue principale"
+                        />
+                    </div>
+                </div>
+            );
+        }
+
+        return (
+            <div className="slider-container">
+                <Slider {...settings}>
+                    {images.map((file, index) => (
+                        <div key={index} className="slide-item">
+                            <img 
+                                src={URL.createObjectURL(file)} 
+                                alt={`Slide ${index + 1}`}
+                            />
+                        </div>
+                    ))}
+                </Slider>
+            </div>
+        );
     }
 
     if (images.length === 1) {

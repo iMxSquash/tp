@@ -16,7 +16,7 @@ const AddArticle = () => {
         category: '',
         brand: '',
         price: 0,
-        img: [],
+        images: {},
         status: true,
         stock: 0
     };
@@ -34,7 +34,10 @@ const AddArticle = () => {
         if (name.startsWith('img')) {
             dispatch(UPDATE_ARTICLE_FIELD({
                 ...article,
-                img: Array.isArray(article.img) ? [...article.img, files[0]] : [files[0]]
+                images: {
+                    ...article.images,
+                    [name]: files[0]
+                }
             }));
         } else {
             dispatch(UPDATE_ARTICLE_FIELD({
@@ -56,7 +59,7 @@ const AddArticle = () => {
         formData.append("status", article.status);
         formData.append("stock", parseInt(article.stock));
 
-        article.img.forEach((image) => {
+        Object.values(article.images).forEach((image) => {
             formData.append("img", image);
         });
 
@@ -200,9 +203,12 @@ const AddArticle = () => {
                             <strong>Statut:</strong> {article.status ? 'Disponible' : 'Indisponible'}
                         </div>
 
-                        {article.img && article.img.length > 0 && (
+                        {article.images && Object.values(article.images).length > 0 && (
                             <div className="detail-image-container">
-                                <ImageSlider images={article.img} />
+                                <ImageSlider
+                                    images={Object.values(article.images)}
+                                    preview={true}
+                                />
                             </div>
                         )}
                     </div>
