@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { ADD_ARTICLE_SUCCESS, FETCH_ARTICLE_ERROR, UPDATE_ARTICLE_FIELD } from '../redux/reducers/article.reducer';
 import axios from 'axios';
-import ImageSlider from '../components/ImageSlider';
+import ImageSlider from '../components/imageSlider';
 
 const AddArticle = () => {
     const imgInput = ['img', 'img1', 'img2', 'img3', 'img4'];
@@ -179,7 +179,7 @@ const AddArticle = () => {
                         <h1>{article.name || 'Nom de l\'article'}</h1>
                         <p className="price">{article.price || '0'}€</p>
                         <p className="mb-2">{article.content || 'Description de l\'article'}</p>
-                        
+
                         <div className="mb-2">
                             <strong>Catégorie:</strong> {article.category || '-'}
                         </div>
@@ -192,7 +192,7 @@ const AddArticle = () => {
                         <div className="mb-2">
                             <strong>Statut:</strong> {article.status ? 'Disponible' : 'Indisponible'}
                         </div>
-                        
+
                         {article.img && article.img.length > 0 && (
                             <div className="detail-image-container">
                                 <ImageSlider images={article.img} />

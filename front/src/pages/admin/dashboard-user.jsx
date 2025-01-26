@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUsers, updateUser } from '../../redux/reducers/user.reducer';
 import axios from 'axios';
+import Loader from '../../components/loader';
 
 const DashboardUser = () => {
     const dispatch = useDispatch();
     const users = useSelector((state) => state.user.users);
+    const [loading, setLoading] = useState(false);
     const [editingUser, setEditingUser] = useState(null);
     const [selectedUser, setSelectedUser] = useState(null);
     const [formData, setFormData] = useState({
@@ -19,11 +21,14 @@ const DashboardUser = () => {
     }, []);
 
     const fetchUsers = async () => {
+        setLoading(true);
         try {
             const response = await axios.get('http://localhost:8000/api/user/get');
             dispatch(setUsers(response.data));
         } catch (error) {
             console.error('Erreur lors de la récupération des utilisateurs:', error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -77,6 +82,8 @@ const DashboardUser = () => {
             console.error('Erreur lors de la mise à jour:', error);
         }
     };
+
+    if (loading) return <Loader />;
 
     return (
         <div className="dashboard-container">
@@ -141,7 +148,6 @@ const DashboardUser = () => {
                 </table>
             </div>
 
-            {/* Modal pour les détails */}
             {selectedUser && (
                 <div className="modal-overlay">
                     <div className="modal-content">
@@ -174,7 +180,6 @@ const DashboardUser = () => {
                 </div>
             )}
 
-            {/* Modal pour la modification */}
             {editingUser && (
                 <div className="modal-overlay">
                     <div className="modal-content">
