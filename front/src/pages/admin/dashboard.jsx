@@ -127,12 +127,9 @@ const DashboardArticles = () => {
     <div className="dashboard-container">
       <div className="flex justify-between items-center mb-2">
         <h1 className="text-xl">Dashboard - Gestion des Articles</h1>
-        <button
-          onClick={() => (window.location.href = "http://localhost:3000/add")}
-          className="btn btn-primary"
-        >
+        <Link to="/add" className="btn btn-primary">
           Ajouter un article
-        </button>
+        </Link>
       </div>
 
       {/* Tableau des articles */}
