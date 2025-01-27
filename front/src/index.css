@@ -708,7 +708,7 @@ code {
 
   .nav-left,
   .nav-right {
-    flex-direction: column;
+    flex-direction: row;
     width: 100%;
     gap: var(--spacing-md);
   }
@@ -741,6 +741,8 @@ code {
 
   .nav-left {
     margin-top: var(--spacing-xl);
+    display: flex;
+    align-items: center;
   }
 }
 
