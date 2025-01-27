@@ -32,7 +32,7 @@ const Header = () => {
                 <div className={`nav-content ${isMobileMenuOpen ? "active" : ""}`}>
                     <div className="nav-left">
                         <Link to="/" onClick={() => setIsMobileMenuOpen(false)}>
-                            Accueil
+                            <img src="../../public/logo.png" alt="logo" />
                         </Link>
                         {auth && (
                             <Link to="/add" onClick={() => setIsMobileMenuOpen(false)}>
