@@ -73,7 +73,7 @@ const DashboardArticles = () => {
     setActionLoading(true);
 
     const formData = new FormData();
-    
+
     formData.append('name', currentArticle.name);
     formData.append('content', currentArticle.content);
     formData.append('category', currentArticle.category);
@@ -88,11 +88,11 @@ const DashboardArticles = () => {
 
     try {
       const response = await api.put(`/admin/update/${currentArticle._id}`, formData, {
-        headers: { 
+        headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
-      
+
       if (response.status === 200) {
         setEditMode(false);
         setCurrentArticle(null);
@@ -202,7 +202,7 @@ const DashboardArticles = () => {
         </table>
       </div>
 
-      {/* Pour afficher les détails */}
+      {/* Modal des détails */}
       {selectedArticle && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -214,24 +214,32 @@ const DashboardArticles = () => {
             </button>
             <h2 className="text-xl mb-2">Détails de l'article</h2>
             <p className="form-group">Nom : {selectedArticle.name}</p>
-            <p className="form-group">Prix : {selectedArticle.price}</p>
+            <p className="form-group">Prix : {selectedArticle.price} €</p>
             <p className="form-group">Catégorie : {selectedArticle.category}</p>
             <p className="form-group">Marque : {selectedArticle.brand}</p>
-            <p className="form-group">
-              Description : {selectedArticle.content}
-            </p>
-            <p className="form-group">Image : </p>
-            <img
-              src={`http://localhost:8000${selectedArticle.picture?.img}`}
-              alt={selectedArticle.name}
-              width="200"
-            />
-            <p className="form-group">Status : {selectedArticle.status}</p>
+            <p className="form-group">Description : {selectedArticle.content}</p>
             <p className="form-group">Stock : {selectedArticle.stock}</p>
+            <p className="form-group">Status : {selectedArticle.status ? "Disponible" : "Indisponible"}</p>
+            <p className="form-group">Date de création : {new Date(selectedArticle.createdAt).toLocaleDateString()}</p>
+            <p className="form-group">Dernière modification : {new Date(selectedArticle.updatedAt).toLocaleDateString()}</p>
+            <div className="form-group">
+              <p>Images : </p>
+              {selectedArticle.picture && Object.entries(selectedArticle.picture).map(([key, value]) => (
+                <div key={key} className="mt-2">
+                  <p>{key} :</p>
+                  <img
+                    src={`http://localhost:8000${value}`}
+                    alt={`${selectedArticle.name} - ${key}`}
+                    width="200"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}
 
+      {/* Modal de modification */}
       {currentArticle && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -241,78 +249,7 @@ const DashboardArticles = () => {
             >
               ×
             </button>
-            <h2 className="text-xl mb-2">Modifier l'utilisateur</h2>
-            {/* <form onSubmit={handleUpdate} className="form-container">
-              <div className="form-group">
-                <label>Nom:</label>
-                <input
-                  type="text"
-                  value={currentArticle.name}
-                  onChange={(e) =>
-                    setCurrentArticle({
-                      ...currentArticle,
-                      name: e.target.value,
-                    })
-                  }
-                  className="form-control"
-                />
-              </div>
-              <div className="form-group">
-                <label>Description</label>
-                <input
-                  type="text"
-                  value={currentArticle.content}
-                  onChange={(e) =>
-                    setCurrentArticle({
-                      ...currentArticle,
-                      content: e.target.value,
-                    })
-                  }
-                  className="form-control"
-                />
-              </div>
-              <div className="form-group">
-                <label>Image</label>
-                <input
-                  type="file"
-                  onChange={(e) =>
-                    setCurrentArticle({
-                      ...currentArticle,
-                      image: e.target.files[0],
-                    })
-                  }
-                  className="form-control"
-                />
-              </div>
-              <div className="form-group">
-                <label>Statut</label>
-                <select
-                  value={currentArticle.status}
-                  onChange={(e) =>
-                    setCurrentArticle({
-                      ...currentArticle,
-                      status: e.target.value,
-                    })
-                  }
-                  className="form-control"
-                >
-                  <option value="true">Disponible</option>
-                  <option value="false">Indisponible</option>
-                </select>
-              </div>
-              <div className="form-group">
-                <button type="submit" className="btn btn-success mr-2">
-                  Sauvegarder
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setCurrentArticle(null)}
-                  className="btn btn-danger"
-                >
-                  Annuler
-                </button>
-              </div>
-            </form> */}
+            <h2 className="text-xl mb-2">Modifier l'article</h2>
             <form onSubmit={handleUpdate} className="form-container">
               <div className="form-group">
                 <label>Nom</label>
@@ -329,14 +266,70 @@ const DashboardArticles = () => {
                 />
               </div>
               <div className="form-group">
-                <label>Description</label>
+                <label>Prix</label>
+                <input
+                  type="number"
+                  value={currentArticle?.price || 0}
+                  onChange={(e) =>
+                    setCurrentArticle({
+                      ...currentArticle,
+                      price: parseFloat(e.target.value),
+                    })
+                  }
+                  className="form-control"
+                />
+              </div>
+              <div className="form-group">
+                <label>Catégorie</label>
                 <input
                   type="text"
+                  value={currentArticle?.category || ""}
+                  onChange={(e) =>
+                    setCurrentArticle({
+                      ...currentArticle,
+                      category: e.target.value,
+                    })
+                  }
+                  className="form-control"
+                />
+              </div>
+              <div className="form-group">
+                <label>Marque</label>
+                <input
+                  type="text"
+                  value={currentArticle?.brand || ""}
+                  onChange={(e) =>
+                    setCurrentArticle({
+                      ...currentArticle,
+                      brand: e.target.value,
+                    })
+                  }
+                  className="form-control"
+                />
+              </div>
+              <div className="form-group">
+                <label>Description</label>
+                <textarea
                   value={currentArticle?.content || ""}
                   onChange={(e) =>
                     setCurrentArticle({
                       ...currentArticle,
                       content: e.target.value,
+                    })
+                  }
+                  className="form-control"
+                  rows="3"
+                />
+              </div>
+              <div className="form-group">
+                <label>Stock</label>
+                <input
+                  type="number"
+                  value={currentArticle?.stock || 0}
+                  onChange={(e) =>
+                    setCurrentArticle({
+                      ...currentArticle,
+                      stock: parseInt(e.target.value),
                     })
                   }
                   className="form-control"
@@ -349,7 +342,7 @@ const DashboardArticles = () => {
                   onChange={(e) =>
                     setCurrentArticle({
                       ...currentArticle,
-                      status: e.target.value,
+                      status: e.target.value === "true",
                     })
                   }
                   className="form-control"
@@ -371,6 +364,21 @@ const DashboardArticles = () => {
                   className="form-control"
                 />
               </div>
+              {currentArticle.picture && (
+                <div className="form-group">
+                  <label>Images actuelles :</label>
+                  {Object.entries(currentArticle.picture).map(([key, value]) => (
+                    <div key={key} className="mt-2">
+                      <p>{key} :</p>
+                      <img
+                        src={`http://localhost:8000${value}`}
+                        alt={`${currentArticle.name} - ${key}`}
+                        width="100"
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
               <div className="form-group">
                 <button type="submit" className="btn btn-success mr-2">
                   Sauvegarder
