@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import * as ACTIONS from "../redux/reducers/article.reducer";
 import axios from "axios";
+import ImageSlider from '../components/ImageSlider';
 
 const Update = () => {
     const dispatch = useDispatch();
@@ -80,81 +81,148 @@ const Update = () => {
     const imgInputs = ["img", "img1", "img2", "img3", "img4"];
 
     return (
-        <div>
-            <h1>Modifier l'article</h1>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="name">Nom :</label>
-                    <input
-                        id="name"
-                        type="text"
-                        name="name"
-                        value={article?.name || ""}
-                        onChange={handleChange}
-                        placeholder="Nom de l'article"
-                    />
-                </div>
-                <div>
-                    <label htmlFor="price">Prix :</label>
-                    <input
-                        id="price"
-                        type="number"
-                        name="price"
-                        value={article?.price || ""}
-                        onChange={handleChange}
-                        placeholder="Prix de l'article"
-                    />
-                </div>
-                <div>
-                    <label htmlFor="content">Description :</label>
-                    <textarea
-                        id="content"
-                        name="content"
-                        value={article?.content || ""}
-                        onChange={handleChange}
-                        placeholder="Description de l'article"
-                    />
-                </div>
-                {imgInputs.map((imgName, index) => (
-                    <div key={imgName}>
-                        <label htmlFor={imgName}>
-                            {index === 0
-                                ? "Image principale (URL) :"
-                                : `Image ${index} (URL) :`}
-                        </label>
-                        <input
-                            id={imgName}
-                            type="text"
-                            name={imgName}
-                            value={article.picture?.[imgName] || ""}
-                            onChange={handleChange}
-                            placeholder={`URL de l'image ${index || "principale"}`}
-                        />
+        <div className="container">
+            <div className="detail-container">
+                <div className="detail-content">
+                    <div className="add-form">
+                        <h1>Modifier l'article</h1>
+                        <form onSubmit={handleSubmit}>
+                            <div className="form-row">
+                                <div className="form-group">
+                                    <input
+                                        id="name"
+                                        type="text"
+                                        name="name"
+                                        value={article?.name || ""}
+                                        onChange={handleChange}
+                                        placeholder="Nom de l'article"
+                                        className="form-control"
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <textarea
+                                        id="content"
+                                        name="content"
+                                        value={article?.content || ""}
+                                        onChange={handleChange}
+                                        placeholder="Description de l'article"
+                                        className="form-control"
+                                    />
+                                </div>
+                            </div>
+                            <div className="form-row">
+                                <div className="form-group">
+                                    <input
+                                        id="category"
+                                        type="text"
+                                        name="category"
+                                        value={article?.category || ""}
+                                        onChange={handleChange}
+                                        placeholder="Catégorie"
+                                        className="form-control"
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <input
+                                        id="brand"
+                                        type="text"
+                                        name="brand"
+                                        value={article?.brand || ""}
+                                        onChange={handleChange}
+                                        placeholder="Marque"
+                                        className="form-control"
+                                    />
+                                </div>
+                            </div>
+                            <div className="form-row">
+                                <div className="form-group">
+                                    <input
+                                        id="price"
+                                        type="number"
+                                        name="price"
+                                        value={article?.price || ""}
+                                        onChange={handleChange}
+                                        placeholder="Prix"
+                                        className="form-control"
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <input
+                                        id="stock"
+                                        type="number"
+                                        name="stock"
+                                        value={article?.stock || ""}
+                                        onChange={handleChange}
+                                        placeholder="Stock"
+                                        className="form-control"
+                                    />
+                                </div>
+                            </div>
+                            <div className="image-upload-container">
+                                {imgInputs.map((imgName, index) => (
+                                    <div key={imgName} className="form-group">
+                                        <label>
+                                            {index === 0 ? "Image principale:" : `Image ${index}:`}
+                                        </label>
+                                        <input
+                                            id={imgName}
+                                            type="text"
+                                            name={imgName}
+                                            value={article.picture?.[imgName] || ""}
+                                            onChange={handleChange}
+                                            placeholder={`URL de l'image ${index || "principale"}`}
+                                            className="form-control"
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="form-group">
+                                <label>
+                                    <input
+                                        id="status"
+                                        type="checkbox"
+                                        name="status"
+                                        checked={article?.status || false}
+                                        onChange={handleChange}
+                                    />
+                                    {" "}Disponible
+                                </label>
+                            </div>
+                            <button type="submit" className="btn btn-primary">
+                                Mettre à jour l'article
+                            </button>
+                        </form>
                     </div>
-                ))}
-                <div>
-                    <label htmlFor="status">Status :</label>
-                    <input
-                        id="status"
-                        type="checkbox"
-                        name="status"
-                        checked={article?.status || false}
-                        onChange={handleChange}
-                    />
+
+                    <div className="detail-info">
+                        <h1>{article?.name || 'Nom de l\'article'}</h1>
+                        <p className="price">{article?.price || '0'}€</p>
+                        <p className="mb-2">{article?.content || 'Description de l\'article'}</p>
+
+                        <div className="mb-2">
+                            <strong>Catégorie:</strong> {article?.category || '-'}
+                        </div>
+                        <div className="mb-2">
+                            <strong>Marque:</strong> {article?.brand || '-'}
+                        </div>
+                        <div className="mb-2">
+                            <strong>Stock:</strong> {article?.stock || '0'}
+                        </div>
+                        <div className="mb-2">
+                            <strong>Statut:</strong> {article?.status ? 'Disponible' : 'Indisponible'}
+                        </div>
+
+                        {article?.picture && Object.values(article.picture).length > 0 && (
+                            <div className="detail-image-container">
+                                <ImageSlider
+                                    images={Object.values(article.picture)}
+                                    baseUrl="http://localhost:8000"
+                                />
+                            </div>
+                        )}
+                    </div>
                 </div>
-                <div>
-                    <label htmlFor="stock">Stock :</label>
-                    <input
-                        id="stock"
-                        type="number"
-                        name="stock"
-                        value={article?.stock || ""}
-                        onChange={handleChange}
-                        placeholder="Quantité en stock"
-                    />
-                </div>
-                <button type="submit">Mettre à jour</button>
-            </form>
+            </div>
         </div>
     );
 };
