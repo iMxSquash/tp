@@ -88,16 +88,12 @@ const Avis = ({ articleId }) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
-      <h3 className="text-xl font-bold mb-4">Avis des utilisateurs</h3>
+    <div className="avis-container">
+      <h3 className="avis-titre">Avis des utilisateurs</h3>
 
-      {/* Liste des avis */}
       {avis.length > 0 ? (
         avis.map((item) => (
-          <div
-            key={item._id}
-            className="mb-4 p-4 bg-gray-100 rounded-lg shadow-sm"
-          >
+          <div key={item._id} className="avis-item">
             {editingId === item._id ? (
               <form onSubmit={handleUpdate}>
                 <textarea
@@ -105,30 +101,23 @@ const Avis = ({ articleId }) => {
                   onChange={(e) => setEditComment(e.target.value)}
                   placeholder="Modifier le commentaire..."
                   required
-                  className="w-full p-2 border rounded mb-2"
                 ></textarea>
                 <select
                   value={editRating}
                   onChange={(e) => setEditRating(Number(e.target.value))}
-                  className="p-2 border rounded mb-2"
                 >
                   {[1, 2, 3, 4, 5].map((n) => (
-                    <option key={n} value={n}>
-                      {n}
-                    </option>
+                    <option key={n} value={n}>{n}</option>
                   ))}
                 </select>
-                <div className="flex space-x-2">
-                  <button
-                    type="submit"
-                    className="px-4 py-2 bg-blue-500 text-white rounded shadow hover:bg-blue-600"
-                  >
+                <div className="avis-actions">
+                  <button type="submit" className="btn btn-primary">
                     Enregistrer
                   </button>
                   <button
                     type="button"
                     onClick={() => setEditingId(null)}
-                    className="px-4 py-2 bg-gray-300 text-gray-700 rounded shadow hover:bg-gray-400"
+                    className="btn btn-danger"
                   >
                     Annuler
                   </button>
@@ -136,26 +125,26 @@ const Avis = ({ articleId }) => {
               </form>
             ) : (
               <div>
-                <p>
+                <p className="avis-user">
                   <strong>Utilisateur :</strong> {item.user?.prenom || "Anonyme"}
                 </p>
-                <p>
+                <p className="avis-rating">
                   <strong>Note :</strong> {item.rating} / 5
                 </p>
-                <p>
+                <p className="avis-comment">
                   <strong>Commentaire :</strong> {item.comment}
                 </p>
                 {auth && auth._id === item.user?._id && (
-                  <div className="mt-2 flex space-x-2">
+                  <div className="avis-actions">
                     <button
                       onClick={() => handleEdit(item._id, item.comment, item.rating)}
-                      className="px-4 py-2 bg-yellow-500 text-white rounded shadow hover:bg-yellow-600"
+                      className="btn btn-primary"
                     >
                       Modifier
                     </button>
                     <button
                       onClick={() => handleDelete(item._id)}
-                      className="px-4 py-2 bg-red-500 text-white rounded shadow hover:bg-red-600"
+                      className="btn btn-danger"
                     >
                       Supprimer
                     </button>
@@ -166,25 +155,18 @@ const Avis = ({ articleId }) => {
           </div>
         ))
       ) : (
-        <p className="text-gray-500">Aucun avis pour cet article.</p>
+        <p>Aucun avis pour cet article.</p>
       )}
 
-      {/* Formulaire d'ajout d'avis */}
       {auth ? (
-        <form
-          onSubmit={handleSubmit}
-          className="mt-6 p-4 bg-gray-50 rounded-lg shadow"
-        >
-          <h4 className="text-lg font-semibold mb-3">Ajouter un avis</h4>
+        <form onSubmit={handleSubmit} className="avis-form">
+          <h4>Ajouter un avis</h4>
           <select
             value={rating}
             onChange={(e) => setRating(Number(e.target.value))}
-            className="w-full p-2 border rounded mb-3"
           >
             {[1, 2, 3, 4, 5].map((n) => (
-              <option key={n} value={n}>
-                {n}
-              </option>
+              <option key={n} value={n}>{n}</option>
             ))}
           </select>
           <textarea
@@ -192,17 +174,13 @@ const Avis = ({ articleId }) => {
             onChange={(e) => setComment(e.target.value)}
             placeholder="Écrivez votre avis..."
             required
-            className="w-full p-2 border rounded mb-3"
           ></textarea>
-          <button
-            type="submit"
-            className="w-full px-4 py-2 bg-green-500 text-white rounded shadow hover:bg-green-600"
-          >
+          <button type="submit" className="btn btn-success">
             Soumettre
           </button>
         </form>
       ) : (
-        <p className="mt-4 text-red-500">Veuillez vous connecter pour laisser un avis.</p>
+        <p className="avis-error">Veuillez vous connecter pour laisser un avis.</p>
       )}
     </div>
   );

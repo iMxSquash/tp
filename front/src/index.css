@@ -801,3 +801,82 @@ input, select, textarea, button {
 .slick-dots li button:before {
     color: var(--color-white);
 }
+
+/* Styles pour les avis */
+.avis-container {
+  width: 100%;
+  margin: 0 auto;
+  padding: var(--spacing-lg);
+  background-color: var(--color-white);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.avis-titre {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--spacing-md);
+  color: var(--color-secondary);
+}
+
+.avis-item {
+  margin-bottom: var(--spacing-md);
+  padding: var(--spacing-md);
+  background-color: var(--color-light);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.avis-user {
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--spacing-xs);
+}
+
+.avis-rating {
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.avis-comment {
+  margin-bottom: var(--spacing-sm);
+  line-height: var(--line-height-normal);
+}
+
+.avis-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-sm);
+}
+
+.avis-form {
+  margin-top: var(--spacing-xl);
+  padding: var(--spacing-md);
+  background-color: var(--color-light);
+  border-radius: var(--border-radius);
+}
+
+.avis-form h4 {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--spacing-md);
+}
+
+.avis-form select,
+.avis-form textarea {
+  width: 100%;
+  padding: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+}
+
+.avis-form textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.avis-error {
+  color: var(--color-danger);
+  margin-top: var(--spacing-md);
+  text-align: center;
+}

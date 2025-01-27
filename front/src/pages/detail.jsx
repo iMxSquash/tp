@@ -83,13 +83,9 @@ const Detail = () => {
                             Modifier
                         </Link>
                     </div>
-                    <div className="detail-avis">
-                        <h2>Avis des utilisateurs</h2>
-                        <Avis articleId={article._id} />
-                    </div>
                 </div>
-                
             </div>
+            <Avis articleId={article._id} />
         </div>
     );
 };
