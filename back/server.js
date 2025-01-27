@@ -572,6 +572,137 @@ const updateAvis = async (req, res) => {
   }
 };
 
+routerAvis.post('/add/:articleId', verifieToken, async (req, res) => {
+  try {
+      const { comment, rating } = req.body;
+      const articleId = req.params.articleId;
+
+      // Création de l'avis
+      const avis = await Avis.create({
+          user: req.user.id, // ID de l'utilisateur récupéré à partir du token
+          article: articleId,
+          rating,
+          comment,
+      });
+
+      // Mise à jour de l'article pour inclure cet avis
+      await Article.findByIdAndUpdate(articleId, { $push: { avis: avis._id } });
+
+      res.status(201).json({ message: 'Avis ajouté avec succès !', avis });
+  } catch (error) {
+      console.error("Erreur lors de l'ajout de l'avis :", error);
+      res.status(500).json({ error: 'Erreur lors de l’ajout de l’avis !' });
+  }
+});
+
+
+
+
+
+
+app.use("/api/avis", routerAvis);
+
+
+routerAvis.get('/article/:id', async (req, res) => {
+  try {
+    const article = await Article.findById(req.params.id).populate({
+      path: 'avis',
+      populate: { path: 'user', select: 'prenom' }, // Sélectionne le prénom ou name
+    });
+    res.status(200).json(article.avis);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Erreur lors de la récupération des avis !' });
+  }
+});
+
+
+
+const AvisSchema = new mongoose.Schema({
+  comment: { type: String, required: true },
+  rating: { type: Number, required: true },
+  article: { type: mongoose.Schema.Types.ObjectId, ref: 'Article', required: true },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // Référence au modèle User
+});
+
+// Vérifie si le modèle existe déjà avant de le déclarer
+module.exports = mongoose.models.Avis || mongoose.model('Avis', AvisSchema);
+
+
+routerAvis.delete('/delete/:avisId', async (req, res) => {
+  try {
+    console.log("ID de l'avis reçu :", req.params.avisId);
+
+    // Vérification si l'ID est valide
+    if (!mongoose.Types.ObjectId.isValid(req.params.avisId)) {
+      console.log("ID d'avis invalide !");
+      return res.status(400).json({ error: "ID d'avis invalide !" });
+    }
+
+    const avis = await Avis.findById(req.params.avisId);
+    if (!avis) {
+      console.log("Avis non trouvé !");
+      return res.status(404).json({ error: 'Avis non trouvé !' });
+    }
+
+    console.log("ID utilisateur de l'avis :", avis.user.toString());
+    if (avis.user.toString() !== req.body.userId && req.body.role !== 'admin') {
+      console.log("Accès refusé. Non autorisé !");
+      return res.status(403).json({ error: 'Accès refusé !' });
+    }
+
+    console.log("Suppression de l'avis...");
+    // Utilisation de deleteOne() pour supprimer l'avis
+    await Avis.deleteOne({ _id: req.params.avisId });
+    await Article.findByIdAndUpdate(avis.article, { $pull: { avis: req.params.avisId } });
+
+    console.log("Avis supprimé avec succès !");
+    res.status(200).json({ message: 'Avis supprimé avec succès !' });
+  } catch (error) {
+    console.error("Erreur interne :", error.message);
+    res.status(500).json({ error: 'Erreur lors de la suppression de l’avis !' });
+  }
+});
+
+
+
+routerAvis.put('/update/:avisId', verifieToken, async (req, res) => {
+  try {
+    const { comment, rating } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(req.params.avisId)) {
+      return res.status(400).json({ error: "ID d'avis invalide !" });
+    }
+
+    const avis = await Avis.findById(req.params.avisId);
+    if (!avis) {
+      return res.status(404).json({ error: "Avis non trouvé !" });
+    }
+
+    // Vérifie si l'utilisateur est le créateur de l'avis
+    if (avis.user.toString() !== req.user.id) {
+      return res.status(403).json({ error: "Accès refusé !" });
+    }
+
+    // Met à jour l'avis
+    avis.comment = comment || avis.comment;
+    avis.rating = rating || avis.rating;
+
+    const updatedAvis = await avis.save();
+
+    res.status(200).json({ message: "Avis modifié avec succès !", avis: updatedAvis });
+  } catch (error) {
+    console.error("Erreur lors de la modification de l'avis :", error);
+    res.status(500).json({ error: "Erreur interne lors de la modification de l'avis !" });
+  }
+});
+
+
+app.get('/api/test', (req, res) => {
+  res.status(200).json({ message: 'Route test OK' });
+});
+
+
 routerArticle.post("/add", upload.array('img', 5), postArticle);
 routerArticle.get("/all", getAllArticle);
 routerArticle.get("/get/:id", oneArticle);
