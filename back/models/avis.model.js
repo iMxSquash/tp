@@ -4,25 +4,27 @@ const AvisSchema = mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "User", // Référence au modèle "User"
       required: true,
     },
     article: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Article",
+      ref: "Article", // Référence au modèle "Article"
       required: true,
     },
     rating: {
       type: Number,
       required: true,
+      min: 1,
+      max: 5, // Note entre 1 et 5
     },
     comment: {
       type: String,
-      required: true,
+      required: true, // Commentaire obligatoire
     },
   },
   {
-    timestamps: { createdAt: true },
+    timestamps: { createdAt: true }, // Ajoute automatiquement `createdAt`
   }
 );
 

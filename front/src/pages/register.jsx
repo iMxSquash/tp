@@ -7,11 +7,13 @@ const Register = () => {
     const [user, setUser] = useState({
         email: '',
         password: '',
+        confirmPassword: '', // Ajout pour vérifier le mot de passe
         prenom: '',
         isActive: true,
-        role: 'user'
+        role: 'user',
     });
     const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false); // Ajout pour indiquer le chargement
 
     const api = axios.create({
         baseURL: 'http://localhost:8000/api',
@@ -20,23 +22,38 @@ const Register = () => {
     const handleChange = (e) => {
         setUser({
             ...user,
-            [e.target.name]: e.target.value
+            [e.target.name]: e.target.value,
         });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Vérifie si les mots de passe correspondent
         if (user.password !== user.confirmPassword) {
-            setError("Les mots de passe ne correspondent pas");
+            setError("Les mots de passe ne correspondent pas.");
             return;
         }
+
         try {
-            console.log(user);
-            
-            await api.post('/user/signup', user);
-            navigate('/login');
+            setLoading(true); // Active l'état de chargement
+            setError(null); // Réinitialise l'erreur
+
+            // Envoie la requête au backend
+            const payload = {
+                email: user.email,
+                password: user.password,
+                prenom: user.prenom,
+                isActive: user.isActive,
+                role: user.role,
+            };
+
+            await api.post('/user/signup', payload);
+            navigate('/sign'); // Redirige vers la page de connexion
         } catch (error) {
-            setError(error.response?.data?.message || "Erreur lors de l'inscription");
+            setError(error.response?.data?.message || "Erreur lors de l'inscription.");
+        } finally {
+            setLoading(false); // Désactive l'état de chargement
         }
     };
 
@@ -116,7 +133,9 @@ const Register = () => {
                         </select>
                     </div>
 
-                    <button type="submit" className="btn btn-primary">S'inscrire</button>
+                    <button type="submit" className="btn btn-primary" disabled={loading}>
+                        {loading ? "Inscription en cours..." : "S'inscrire"}
+                    </button>
                 </form>
                 <Link to="/sign">Déjà inscrit ? Connectez-vous</Link>
             </div>

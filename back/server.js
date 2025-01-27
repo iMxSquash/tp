@@ -109,16 +109,19 @@ const createError = (status, message) => {
 }
 
 const verifieToken = (req, res, next) => {
-  const token = req.cookies.access_token;
-  if(!token) return next(createError(401, "Acces Denied"))
-  jwt.verify(token, env.TOKEN, (err, user) => {
-    if(err) {
-      return next(createError(403, "Token non valide !"))
-    }
-    req.user = user
-    next();
-  })
-}
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) return res.status(401).json({ message: "Accès refusé. Aucun token fourni." });
+
+  jwt.verify(token, process.env.TOKEN, (err, user) => {
+      if (err) {
+          console.error("Token invalide :", err);
+          return res.status(403).json({ message: "Token invalide." });
+      }
+      console.log("Utilisateur authentifié :", user); // Vérifie l'utilisateur
+      req.user = user;
+      next();
+  });
+};
 
 const postArticle = async (req, res) => {
   try {
@@ -362,37 +365,42 @@ const verifyEmail = async (req, res, next) => {
 };
 
 const sign = async (req, res, next) => {
-  try{
-    const user = await Model.findOne({email: req.body.email})
-    if (!user) return res.status(404).json("Uset not Found !")
+  try {
+    const user = await Model.findOne({ email: req.body.email });
+    if (!user) return res.status(404).json("User not Found!");
+
     if (!user.isVerified) {
-      return res.status(403).json({ message: 'Veuillez vérifier votre email pour accéder à cette fonctionnalité.' });
+      return res
+        .status(403)
+        .json({ message: "Veuillez vérifier votre email pour accéder à cette fonctionnalité." });
     }
-    const comparePassword = await bcrypt.compare(
-      req.body.password,
-      user.password
-    )
-    if(!comparePassword) return res.status(400).json('Wrong Credentials !')
+
+    const comparePassword = await bcrypt.compare(req.body.password, user.password);
+    if (!comparePassword) return res.status(400).json("Wrong Credentials!");
 
     const token = jwt.sign(
-      {id: user._id},
+      { id: user._id },
       env.TOKEN,
-      { expiresIn: "24h"}
-    )
-    const { password, ...others } = user._doc
-    res.cookie('access_token', token, { 
+      { expiresIn: "24h" }
+    );
+
+    const { password, ...others } = user._doc;
+
+    res.cookie("access_token", token, {
       httpOnly: true,
-      secure: false, 
-      sameSite: 'strict', 
-      maxAge: 24 * 60 * 60 * 1000 
-    })
-    .status(200)
-    .json(others)
-  }catch(error){
+      secure: false, // Met à true si ton application est en HTTPS
+      sameSite: "strict",
+      maxAge: 24 * 60 * 60 * 1000, // 1 jour
+    });
+
+    // Inclure le token dans la réponse JSON
+    res.status(200).json({ ...others, token });
+  } catch (error) {
     console.log(error);
-    next(error)
+    next(error);
   }
-}
+};
+
 
 const logout = async (req, res) => {
   try {
@@ -574,6 +582,9 @@ routerArticle.get("/desc", descArticle);
 routerArticle.get("/avis/:id", avisByArticle);
 routerArticle.get("/note", sortedByNote);
 
+routerArticle.delete("/admin/delete/:id", adminDeleteArticle);
+routerArticle.put("/admin/update/:id", upload.single('img'), adminUpdateArticle)
+
 routerUser.post("/signup", signup);
 routerUser.post("/sign", sign);
 routerUser.put("/verify/:token", verifyEmail)
@@ -591,6 +602,3 @@ routerUser.put("/admin/reactivate/:id", adminReactivateUser);
 routerAvis.post('/add/:articleId',verifieToken, postAvis)
 routerAvis.delete('/delete/:avisId', verifieToken, deleteAvis)
 routerAvis.put('/update/:avisId', verifieToken, updateAvis);
-
-routerArticle.put("/admin/update/:id", upload.single('img'), adminUpdateArticle);
-routerArticle.delete("/admin/delete/:id", adminDeleteArticle);
