@@ -54,17 +54,21 @@ const Update = () => {
         e.preventDefault();
         const formattedArticle = {
             ...article,
-            picture: Object.values(article.picture || {}),
+            picture: Object.values(article.picture || {})
         };
-        console.log("Données envoyées formatées :", formattedArticle);
 
         try {
-            const { data } = await api.put(`/article/update/${id}`, formattedArticle);
+            const token = localStorage.getItem('token');
+            const { data } = await api.put(`/article/admin/update/${id}`, formattedArticle, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
             dispatch(ACTIONS.UPDATE_ARTICLE_SUCCESS(data));
             navigate(`/detail/${id}`);
         } catch (err) {
             console.error("Erreur lors de la mise à jour de l'article :", err);
-            console.error("Réponse de l'API :", err.response?.data);
             dispatch(ACTIONS.FETCH_ARTICLE_ERROR(err.response?.data?.message || "Erreur serveur"));
         }
     };

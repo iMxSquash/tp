@@ -35,7 +35,13 @@ const Detail = () => {
 
     const deleteArticle = async () => {
         try {
-            await api.delete(`/article/delete/${id}`);
+            const token = localStorage.getItem('token');
+            await api.delete(`/article/admin/delete/${id}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
             dispatch(ACTIONS.DELETE_ARTICLE_SUCCESS(id));
             navigate('/');
         } catch (error) {
