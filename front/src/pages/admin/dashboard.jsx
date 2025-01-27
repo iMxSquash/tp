@@ -73,19 +73,33 @@ const DashboardArticles = () => {
     setActionLoading(true);
 
     const formData = new FormData();
-    Object.keys(currentArticle).forEach((key) => {
-      formData.append(key, currentArticle[key]);
-    });
+    
+    formData.append('name', currentArticle.name);
+    formData.append('content', currentArticle.content);
+    formData.append('category', currentArticle.category);
+    formData.append('brand', currentArticle.brand);
+    formData.append('price', currentArticle.price);
+    formData.append('stock', currentArticle.stock);
+    formData.append('status', currentArticle.status);
+
+    if (currentArticle.image instanceof File) {
+      formData.append('img', currentArticle.image);
+    }
 
     try {
-      await api.put(`/update/${currentArticle._id}`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+      const response = await api.put(`/admin/update/${currentArticle._id}`, formData, {
+        headers: { 
+          'Content-Type': 'multipart/form-data'
+        }
       });
-      setEditMode(false);
-      setCurrentArticle(null);
-      fetchArticles();
+      
+      if (response.status === 200) {
+        setEditMode(false);
+        setCurrentArticle(null);
+        fetchArticles();
+      }
     } catch (err) {
-      console.error(err);
+      console.error("Erreur lors de la mise à jour:", err.response?.data || err.message);
     } finally {
       setActionLoading(false);
     }
@@ -94,7 +108,7 @@ const DashboardArticles = () => {
   const handleDelete = async (id) => {
     setActionLoading(true);
     try {
-      await api.delete(`/delete/${id}`);
+      await api.delete(`/admin/delete/${id}`);
       fetchArticles();
     } catch (err) {
       console.error(err);
@@ -152,9 +166,9 @@ const DashboardArticles = () => {
                 <td>{article.brand}</td>
                 <td>{article.content}</td>
                 <td>
-                  {article.image && (
+                  {article.picture && article.picture.img && (
                     <img
-                      src={`http://localhost:8000${article.image}`}
+                      src={`http://localhost:8000${article.picture.img}`}
                       alt={article.name}
                       width="50"
                     />
@@ -208,7 +222,7 @@ const DashboardArticles = () => {
             </p>
             <p className="form-group">Image : </p>
             <img
-              src={`http://localhost:8000${selectedArticle.image}`}
+              src={`http://localhost:8000${selectedArticle.picture?.img}`}
               alt={selectedArticle.name}
               width="200"
             />

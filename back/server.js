@@ -187,6 +187,52 @@ const deleteArticle = async (req, res) => {
   }
 };
 
+const adminUpdateArticle = async (req, res) => {
+  try {
+    let updateData = {};
+    
+    const fields = ['name', 'content', 'category', 'brand', 'price', 'stock', 'status'];
+    fields.forEach(field => {
+      if (req.body[field] !== undefined) {
+        updateData[field] = req.body[field];
+      }
+    });
+
+    if (req.file) {
+      updateData.picture = {
+        img: `/uploads/${req.file.filename}`
+      };
+    }
+
+    const article = await Article.findByIdAndUpdate(
+      req.params.id,
+      { $set: updateData },
+      { new: true }
+    );
+    
+    if (!article) {
+      return res.status(404).json({ error: "Article not found!" });
+    }
+    
+    res.status(200).json(article);
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour:", error);
+    res.status(500).json({ error: "Error updating article", details: error.message });
+  }
+};
+
+
+const adminDeleteArticle = async (req, res) => {
+  try {
+    const article = await Article.findByIdAndDelete(req.params.id);
+    if (!article) return res.status(404).json("Article not found!");
+    res.status(200).json("Article successfully deleted");
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Error deleting article" });
+  }
+};
+
 const ascArticle = async (req, res) => {
   try {
     const articles = await Article.find().sort("price");
@@ -528,6 +574,9 @@ routerArticle.get("/desc", descArticle);
 routerArticle.get("/avis/:id", avisByArticle);
 routerArticle.get("/note", sortedByNote);
 
+routerArticle.put("/admin/update/:id", upload.single('img'), adminUpdateArticle);
+routerArticle.delete("/admin/delete/:id", adminDeleteArticle);
+
 routerUser.post("/signup", signup);
 routerUser.post("/sign", sign);
 routerUser.put("/verify/:token", verifyEmail)
@@ -545,5 +594,3 @@ routerUser.put("/admin/reactivate/:id", adminReactivateUser);
 routerAvis.post('/add/:articleId',verifieToken, postAvis)
 routerAvis.delete('/delete/:avisId', verifieToken, deleteAvis)
 routerAvis.put('/update/:avisId', verifieToken, updateAvis);
-
-
