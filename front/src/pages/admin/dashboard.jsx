@@ -147,10 +147,9 @@ const DashboardArticles = () => {
           <thead>
             <tr>
               <th>Nom</th>
-              <th>Prix</th>
-              <th>Catégorie</th>
-              <th>Marque</th>
               <th>Description</th>
+              <th>Marque</th>
+              <th>Prix</th>
               <th>Image</th>
               <th>Status</th>
               <th>Stock</th>
@@ -161,10 +160,9 @@ const DashboardArticles = () => {
             {articles.map((article) => (
               <tr key={article._id}>
                 <td>{article.name}</td>
-                <td>{article.price}</td>
-                <td>{article.category}</td>
-                <td>{article.brand}</td>
                 <td>{article.content}</td>
+                <td>{article.brand}</td>
+                <td>{article.price} €</td>
                 <td>
                   {article.picture && article.picture.img && (
                     <img
@@ -174,7 +172,7 @@ const DashboardArticles = () => {
                     />
                   )}
                 </td>
-                <td>{article.status}</td>
+                <td>{article.status ? "Disponible" : "Indisponible"}</td>
                 <td>{article.stock}</td>
                 <td>
                   <button
