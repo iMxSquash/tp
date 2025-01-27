@@ -59,9 +59,14 @@ const AddArticle = () => {
         formData.append("status", article.status);
         formData.append("stock", parseInt(article.stock));
 
-        Object.values(article.images).forEach((image) => {
-            formData.append("img", image);
-        });
+        // Vérifier si article.images existe avant d'utiliser Object.values
+        if (article.images && typeof article.images === 'object') {
+            Object.values(article.images).forEach((image) => {
+                if (image) {
+                    formData.append("img", image);
+                }
+            });
+        }
 
         try {
             const { data } = await api.post('/article/add', formData, {
