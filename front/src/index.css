@@ -151,6 +151,15 @@ code {
   font-weight: var(--font-weight-medium);
 }
 
+.nav-left a:has(img) {
+  padding: 0;
+  background-color: transparent;
+}
+
+.nav-left a:has(img):hover {
+  background-color: transparent;
+}
+
 .nav-left a:hover {
   background-color: var(--color-secondary);
 }
@@ -164,6 +173,12 @@ code {
 .nav-right a {
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-medium);
+}
+
+.nav-left img {
+  height: 80px;
+  width: auto;
+  object-fit: contain;
 }
 
 /* Dropdown styles */
