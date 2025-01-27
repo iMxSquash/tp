@@ -1,12 +1,12 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 const articleSlice = createSlice({
-    name: 'article',
+    name: "article",
     initialState: {
         articles: [],
         currentArticle: null,
         loading: false,
-        error: null
+        error: null,
     },
     reducers: {
         FETCH_ARTICLE_START: (state) => {
@@ -29,22 +29,28 @@ const articleSlice = createSlice({
             state.articles.push(action.payload);
         },
         UPDATE_ARTICLE_SUCCESS: (state, action) => {
-            state.currentArticle = action.payload;
-            const index = state.articles.findIndex(article => article._id === action.payload._id);
+            const updatedArticle = action.payload;
+            state.currentArticle = updatedArticle;
+            const index = state.articles.findIndex((article) => article._id === updatedArticle._id);
             if (index !== -1) {
-                state.articles[index] = action.payload;
+                state.articles[index] = updatedArticle;
             }
         },
         DELETE_ARTICLE_SUCCESS: (state, action) => {
-            state.articles = state.articles.filter(article => article._id !== action.payload);
+            state.articles = state.articles.filter((article) => article._id !== action.payload);
         },
         UPDATE_ARTICLE_FIELD: (state, action) => {
-            state.currentArticle = action.payload;
+            if (state.currentArticle) {
+                state.currentArticle = {
+                    ...state.currentArticle,
+                    ...action.payload,
+                };
+            }
         },
         RESET_CURRENT_ARTICLE: (state) => {
             state.currentArticle = null;
-        }
-    }
+        },
+    },
 });
 
 export const {
@@ -56,7 +62,7 @@ export const {
     UPDATE_ARTICLE_SUCCESS,
     DELETE_ARTICLE_SUCCESS,
     UPDATE_ARTICLE_FIELD,
-    RESET_CURRENT_ARTICLE
+    RESET_CURRENT_ARTICLE,
 } = articleSlice.actions;
 
 export default articleSlice.reducer;

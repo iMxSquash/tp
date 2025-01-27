@@ -20,20 +20,17 @@ export const AuthProvider = ({ children }) => {
     });
 
     const login = async (user) => {
-        setLoading(true);
         try {
-            const { data, status } = await api.post('/user/sign', user);
-            if (status === 200) {
-                localStorage.setItem('auth', JSON.stringify(data));
-                setAuth(data);
-                navigate('/');
-                setLoading(false);
-            }
+            const { data } = await api.post('/user/sign', user);
+            localStorage.setItem('auth', JSON.stringify(data)); // Stocke le token ici
+            setAuth(data);
+            navigate('/');
         } catch (error) {
-            console.log("Erreur lors de la connexion:", error);
-            setLoading(false);
+            console.error("Erreur lors de la connexion :", error);
         }
     };
+    
+    
 
     const logout = async () => {
         setLoading(true);

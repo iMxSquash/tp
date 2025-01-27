@@ -109,16 +109,28 @@ const createError = (status, message) => {
 }
 
 const verifieToken = (req, res, next) => {
-  const token = req.cookies.access_token;
-  if(!token) return next(createError(401, "Acces Denied"))
-  jwt.verify(token, env.TOKEN, (err, user) => {
-    if(err) {
-      return next(createError(403, "Token non valide !"))
-    }
-    req.user = user
-    next();
-  })
-}
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) return res.status(401).json({ message: "Accès refusé. Aucun token fourni." });
+
+  jwt.verify(token, process.env.TOKEN, (err, user) => {
+      if (err) {
+          console.error("Token invalide :", err);
+          return res.status(403).json({ message: "Token invalide." });
+      }
+      console.log("Utilisateur authentifié :", user); // Vérifie l'utilisateur
+      req.user = user;
+      next();
+  });
+};
+
+
+
+routerUser.get("/check-auth", verifieToken, (req, res) => {
+  res.status(200).json({ message: "Utilisateur connecté" });
+});
+
+
+
 
 const postArticle = async (req, res) => {
   try {
@@ -316,37 +328,42 @@ const verifyEmail = async (req, res, next) => {
 };
 
 const sign = async (req, res, next) => {
-  try{
-    const user = await Model.findOne({email: req.body.email})
-    if (!user) return res.status(404).json("Uset not Found !")
+  try {
+    const user = await Model.findOne({ email: req.body.email });
+    if (!user) return res.status(404).json("User not Found!");
+
     if (!user.isVerified) {
-      return res.status(403).json({ message: 'Veuillez vérifier votre email pour accéder à cette fonctionnalité.' });
+      return res
+        .status(403)
+        .json({ message: "Veuillez vérifier votre email pour accéder à cette fonctionnalité." });
     }
-    const comparePassword = await bcrypt.compare(
-      req.body.password,
-      user.password
-    )
-    if(!comparePassword) return res.status(400).json('Wrong Credentials !')
+
+    const comparePassword = await bcrypt.compare(req.body.password, user.password);
+    if (!comparePassword) return res.status(400).json("Wrong Credentials!");
 
     const token = jwt.sign(
-      {id: user._id},
+      { id: user._id },
       env.TOKEN,
-      { expiresIn: "24h"}
-    )
-    const { password, ...others } = user._doc
-    res.cookie('access_token', token, { 
+      { expiresIn: "24h" }
+    );
+
+    const { password, ...others } = user._doc;
+
+    res.cookie("access_token", token, {
       httpOnly: true,
-      secure: false, 
-      sameSite: 'strict', 
-      maxAge: 24 * 60 * 60 * 1000 
-    })
-    .status(200)
-    .json(others)
-  }catch(error){
+      secure: false, // Met à true si ton application est en HTTPS
+      sameSite: "strict",
+      maxAge: 24 * 60 * 60 * 1000, // 1 jour
+    });
+
+    // Inclure le token dans la réponse JSON
+    res.status(200).json({ ...others, token });
+  } catch (error) {
     console.log(error);
-    next(error)
+    next(error);
   }
-}
+};
+
 
 const logout = async (req, res) => {
   try {
@@ -542,8 +559,140 @@ routerUser.put("/admin/update/:id", updateUserAdmin);
 routerUser.put("/admin/deactivate/:id", adminDeactivateUser);
 routerUser.put("/admin/reactivate/:id", adminReactivateUser);
 
-routerAvis.post('/add/:articleId',verifieToken, postAvis)
-routerAvis.delete('/delete/:avisId', verifieToken, deleteAvis)
-routerAvis.put('/update/:avisId', verifieToken, updateAvis);
+// routerAvis.post('/add/:articleId',verifieToken, postAvis)
+// routerAvis.delete('/delete/:avisId', verifieToken, deleteAvis)
+// routerAvis.put('/update/:avisId', verifieToken, updateAvis);
 
 
+
+
+routerAvis.post('/add/:articleId', verifieToken, async (req, res) => {
+  try {
+      const { comment, rating } = req.body;
+      const articleId = req.params.articleId;
+
+      // Création de l'avis
+      const avis = await Avis.create({
+          user: req.user.id, // ID de l'utilisateur récupéré à partir du token
+          article: articleId,
+          rating,
+          comment,
+      });
+
+      // Mise à jour de l'article pour inclure cet avis
+      await Article.findByIdAndUpdate(articleId, { $push: { avis: avis._id } });
+
+      res.status(201).json({ message: 'Avis ajouté avec succès !', avis });
+  } catch (error) {
+      console.error("Erreur lors de l'ajout de l'avis :", error);
+      res.status(500).json({ error: 'Erreur lors de l’ajout de l’avis !' });
+  }
+});
+
+
+
+
+
+
+app.use("/api/avis", routerAvis);
+
+
+routerAvis.get('/article/:id', async (req, res) => {
+  try {
+    const article = await Article.findById(req.params.id).populate({
+      path: 'avis',
+      populate: { path: 'user', select: 'prenom' }, // Sélectionne le prénom ou name
+    });
+    res.status(200).json(article.avis);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Erreur lors de la récupération des avis !' });
+  }
+});
+
+
+
+const AvisSchema = new mongoose.Schema({
+  comment: { type: String, required: true },
+  rating: { type: Number, required: true },
+  article: { type: mongoose.Schema.Types.ObjectId, ref: 'Article', required: true },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // Référence au modèle User
+});
+
+// Vérifie si le modèle existe déjà avant de le déclarer
+module.exports = mongoose.models.Avis || mongoose.model('Avis', AvisSchema);
+
+
+routerAvis.delete('/delete/:avisId', async (req, res) => {
+  try {
+    console.log("ID de l'avis reçu :", req.params.avisId);
+
+    // Vérification si l'ID est valide
+    if (!mongoose.Types.ObjectId.isValid(req.params.avisId)) {
+      console.log("ID d'avis invalide !");
+      return res.status(400).json({ error: "ID d'avis invalide !" });
+    }
+
+    const avis = await Avis.findById(req.params.avisId);
+    if (!avis) {
+      console.log("Avis non trouvé !");
+      return res.status(404).json({ error: 'Avis non trouvé !' });
+    }
+
+    console.log("ID utilisateur de l'avis :", avis.user.toString());
+    if (avis.user.toString() !== req.body.userId && req.body.role !== 'admin') {
+      console.log("Accès refusé. Non autorisé !");
+      return res.status(403).json({ error: 'Accès refusé !' });
+    }
+
+    console.log("Suppression de l'avis...");
+    // Utilisation de deleteOne() pour supprimer l'avis
+    await Avis.deleteOne({ _id: req.params.avisId });
+    await Article.findByIdAndUpdate(avis.article, { $pull: { avis: req.params.avisId } });
+
+    console.log("Avis supprimé avec succès !");
+    res.status(200).json({ message: 'Avis supprimé avec succès !' });
+  } catch (error) {
+    console.error("Erreur interne :", error.message);
+    res.status(500).json({ error: 'Erreur lors de la suppression de l’avis !' });
+  }
+});
+
+
+
+routerAvis.put('/update/:avisId', verifieToken, async (req, res) => {
+  try {
+    const { comment, rating } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(req.params.avisId)) {
+      return res.status(400).json({ error: "ID d'avis invalide !" });
+    }
+
+    const avis = await Avis.findById(req.params.avisId);
+    if (!avis) {
+      return res.status(404).json({ error: "Avis non trouvé !" });
+    }
+
+    // Vérifie si l'utilisateur est le créateur de l'avis
+    if (avis.user.toString() !== req.user.id) {
+      return res.status(403).json({ error: "Accès refusé !" });
+    }
+
+    // Met à jour l'avis
+    avis.comment = comment || avis.comment;
+    avis.rating = rating || avis.rating;
+
+    const updatedAvis = await avis.save();
+
+    res.status(200).json({ message: "Avis modifié avec succès !", avis: updatedAvis });
+  } catch (error) {
+    console.error("Erreur lors de la modification de l'avis :", error);
+    res.status(500).json({ error: "Erreur interne lors de la modification de l'avis !" });
+  }
+});
+
+
+// Route de test
+app.get('/api/test', (req, res) => {
+  res.status(200).json({ message: 'Route test OK' });
+});

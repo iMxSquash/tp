@@ -5,6 +5,7 @@ import * as ACTIONS from "../redux/reducers/article.reducer";
 import axios from 'axios';
 import Loader from '../components/Loader';
 import ImageSlider from '../components/ImageSlider';
+import Avis from "../components/Avis";
 
 const Detail = () => {
     const dispatch = useDispatch();
@@ -82,7 +83,12 @@ const Detail = () => {
                             Modifier
                         </Link>
                     </div>
+                    <div className="detail-avis">
+                        <h2>Avis des utilisateurs</h2>
+                        <Avis articleId={article._id} />
+                    </div>
                 </div>
+                
             </div>
         </div>
     );
