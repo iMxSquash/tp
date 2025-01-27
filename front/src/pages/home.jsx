@@ -32,8 +32,43 @@ const Home = () => {
     if (error) return <p>{error}</p>;
 
     return (
+        <>
+        <div className="flex justify-center mb-5 banner-container">
+                <img
+                    src="/banniere.png"
+                    alt="Bannière"
+                    className="w-full max-w-5xl rounded-2xl shadow-lg banner"
+                />
+        </div>
+        <h1 className="main-title">Le confort qui vous suit,<br />du jour à la nuit</h1>
+       
         <div className="container">
-            <h1 className="text-center mb-2">Nos Articles</h1>
+            <div class="mini-title">
+                <h2>En ce moment</h2>
+            </div>
+
+        
+            <div class="carousel-container">
+                <div class="carousel">
+                    <div class="carousel-item">
+                    <img src="/image1.jpg" alt="Nouveau : Shox R4" />
+                    <p>Nouveau : Shox R4</p>
+                    </div>
+                    <div class="carousel-item">
+                    <img src="/image2.jpg" alt="Cosmic Runner" />
+                    <p>Cosmic Runner</p>
+                    </div>
+                    <div class="carousel-item">
+                    <img src="/image3.jpg" alt="Survêtement Nike Tech Woven" />
+                    <p>Survêtement Nike Tech Woven</p>
+                    </div>
+                    <div class="carousel-item">
+                    <img src="/image4.jpg" alt="Jordans" />
+                    <p>Jordans</p>
+                    </div>
+                </div>
+            </div>
+            <h1 className="title-home text-center mb-2">Nos Articles</h1>
             <div className="grid">
                 {articles.length === 0 && <p>Aucun article disponible</p>}
                 {articles.map((item) => (
@@ -56,6 +91,7 @@ const Home = () => {
                 ))}
             </div>
         </div>
+        </>
     );
 };
 
