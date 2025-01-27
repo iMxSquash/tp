@@ -574,9 +574,6 @@ routerArticle.get("/desc", descArticle);
 routerArticle.get("/avis/:id", avisByArticle);
 routerArticle.get("/note", sortedByNote);
 
-routerArticle.put("/admin/update/:id", upload.single('img'), adminUpdateArticle);
-routerArticle.delete("/admin/delete/:id", adminDeleteArticle);
-
 routerUser.post("/signup", signup);
 routerUser.post("/sign", sign);
 routerUser.put("/verify/:token", verifyEmail)
@@ -594,3 +591,6 @@ routerUser.put("/admin/reactivate/:id", adminReactivateUser);
 routerAvis.post('/add/:articleId',verifieToken, postAvis)
 routerAvis.delete('/delete/:avisId', verifieToken, deleteAvis)
 routerAvis.put('/update/:avisId', verifieToken, updateAvis);
+
+routerArticle.put("/admin/update/:id", upload.single('img'), adminUpdateArticle);
+routerArticle.delete("/admin/delete/:id", adminDeleteArticle);
